@@ -1,10 +1,9 @@
-import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './pages/Home/Home.tsx'
-import Search from './pages/Search/Search.tsx';
-import Hotel from './pages/Hotel/Hotel.tsx';
-import Checkout from './pages/Checkout/Checkout.tsx';
-import NotFound from './pages/NotFound/NotFound.tsx';
+import Home from './pages/Home/Home'
+import Search from './pages/Search/Search';
+import Hotel from './pages/Hotel/Hotel';
+import Checkout from './pages/Checkout/Checkout';
+import NotFound from './pages/NotFound/NotFound';
 
 const router = createBrowserRouter([
   {

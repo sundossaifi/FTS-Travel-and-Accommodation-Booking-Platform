@@ -2,10 +2,9 @@ import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 
 export default function Header() {
-
     return (
         <Box sx={{
-            minHeight: '80vh',
+            minHeight: '90vh',
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
@@ -32,5 +31,4 @@ export default function Header() {
 
         </Box>
     )
-
 }
