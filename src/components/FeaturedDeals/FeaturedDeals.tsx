@@ -30,7 +30,7 @@ export default function FeaturedDeals() {
                 justifyContent: 'center',
                 alignItems: 'center',
             }}>
-                <Typography variant="h2" sx={{
+                <Typography variant="h2" gutterBottom sx={{
                     color: "#3b8fab",
                     fontSize: { md: "50px", xs: "22px" },
                     marginBottom: '30px'
@@ -41,7 +41,7 @@ export default function FeaturedDeals() {
                     {featuredDeals.map((deal) => (
                         <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
                             <RoomCard
-                                key={ deal.hotelId}
+                                key={deal.hotelId}
                                 originalRoomPrice={deal.originalRoomPrice}
                                 finalPrice={deal.finalPrice}
                                 hotelName={deal.hotelName}
