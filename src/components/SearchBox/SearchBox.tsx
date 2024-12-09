@@ -18,12 +18,18 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { searchHotels } from "../../services/homeService";
 
 export default function SearchBox() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
     const [location, setLocation] = useState<string>("");
-    const [checkInDate, setCheckInDate] = useState<Date | null>(null);
-    const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
+    const [checkInDate, setCheckInDate] = useState<Date | null>(today);
+    const [checkOutDate, setCheckOutDate] = useState<Date | null>(tomorrow);
 
     const [guests, setGuests] = useState<string>("1 guest, 1 room");
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -32,39 +38,62 @@ export default function SearchBox() {
     const [children, setChildren] = useState<number>(0);
     const [rooms, setRooms] = useState<number>(1);
 
-    const handleGuestsClick = (event: React.MouseEvent<HTMLElement>) => {
+    const navigate = useNavigate();
+
+    function handleGuestsClick(event: React.MouseEvent<HTMLElement>) {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleGuestsClose = () => {
+    function handleGuestsClose() {
         setGuests(`${adults + children} guest${adults + children > 1 ? "s" : ""}, ${rooms} room${rooms > 1 ? "s" : ""}`);
         setAnchorEl(null);
     };
 
-    const handleIncrement = (type: "adults" | "children" | "rooms") => {
+    function handleIncrement(type: "adults" | "children" | "rooms") {
         if (type === "adults") setAdults((prev) => prev + 1);
         if (type === "children") setChildren((prev) => prev + 1);
         if (type === "rooms") setRooms((prev) => prev + 1);
     };
 
-    const handleDecrement = (type: "adults" | "children" | "rooms") => {
+    function handleDecrement(type: "adults" | "children" | "rooms") {
         if (type === "adults" && adults > 1) setAdults((prev) => prev - 1);
         if (type === "children" && children > 0) setChildren((prev) => prev - 1);
         if (type === "rooms" && rooms > 1) setRooms((prev) => prev - 1);
     };
 
+    function getFormattedDate(date: Date | null): string | null {
+        return date ? format(date, "yyyy-MM-dd") : null;
+    };
+
+    const handleSearch = async () => {
+        try {
+            const results = await searchHotels({
+                checkInDate: getFormattedDate(checkInDate) || "",
+                checkOutDate: getFormattedDate(checkOutDate) || "",
+                city: location,
+                numberOfRooms: rooms,
+                adults: adults,
+                children: children,
+            });
+            navigate("/search-results", { state: { results } });
+        } catch (error) {
+            console.error("Error while searching for hotels:", error);
+        }
+    };
+
     return (
-        <Container sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <Container sx={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Box
                 sx={{
                     display: "flex",
+                    alignItems: "center",
                     flexDirection: { xs: "column", md: "row" },
                     gap: { xs: "10px" },
                     backgroundColor: "white",
                     borderRadius: "40px",
                     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
                     padding: "8px",
-                    maxWidth: "70%",
+                    maxWidth: "75%",
                     margin: "0 auto",
                     position: { md: "absolute", xs: 'unset' },
                     marginTop: { md: "-35px", xs: "0px" },
@@ -121,7 +150,6 @@ export default function SearchBox() {
                                 slotProps={{
                                     textField: {
                                         variant: "standard",
-                                        placeholder: "07/12/2024",
                                         InputProps: { disableUnderline: true },
                                     },
                                 }}
@@ -146,7 +174,6 @@ export default function SearchBox() {
                                 slotProps={{
                                     textField: {
                                         variant: "standard",
-                                        placeholder: "08/12/2024",
                                         InputProps: { disableUnderline: true },
                                     },
                                 }}
@@ -230,13 +257,14 @@ export default function SearchBox() {
                     <Button
                         variant="contained"
                         color="primary"
+                        onClick={handleSearch}
                         sx={{
                             borderRadius: "30px",
                             padding: "10px 20px",
                             fontSize: "16px",
                             textTransform: "none",
                             width: { xs: "100%" },
-                            backgroundColor: "#3b8fab",
+                            backgroundColor: "#174b71",
                         }}
                     >
                         Search

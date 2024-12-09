@@ -31,18 +31,16 @@ export default function TrendingDestinations() {
                 alignItems: "center",
             }}>
                 <Typography variant="h2" gutterBottom sx={{
-                    color: "#3b8fab",
+                    color: "#174b71",
                     fontSize: { md: "50px", xs: "22px" },
                     marginBottom: '30px'
                 }}>
                     Trending Destinations
                 </Typography>
-
-                <Grid2 container spacing={{ xs: 2, md: 3 }} alignItems={'center'}>
+                <Grid2 container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 2, sm: 10, md: 3 }} alignItems={'center'}>
                     {destinations.map((destination) => (
-                        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid2 key={destination.cityId} size={{ xs: 12, sm: 6, md: 4 }}>
                             <TrendingDestinationCard
-                                key={destination.cityId}
                                 cityName={destination.cityName}
                                 thumbnailUrl={destination.thumbnailUrl}
                                 countryName={destination.countryName}
@@ -50,7 +48,6 @@ export default function TrendingDestinations() {
                         </Grid2>
                     ))}
                 </Grid2>
-
             </Box>
         </section>
     )

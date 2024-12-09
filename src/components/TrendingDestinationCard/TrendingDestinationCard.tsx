@@ -23,12 +23,13 @@ export default function TrendingDestinationCard({ cityName, countryName, thumbna
                     width: "100%",
                     height: "100%",
                     backgroundImage: `url(${thumbnailUrl})`,
+                    backgroundRepeat: 'no-repeat',
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     filter: "brightness(0.7)",
+                    overflow: "hidden",
                 }}
             />
-
             <Box
                 sx={{
                     position: "absolute",
@@ -51,6 +52,5 @@ export default function TrendingDestinationCard({ cityName, countryName, thumbna
                 </Typography>
             </Box>
         </Box>
-
     );
 }

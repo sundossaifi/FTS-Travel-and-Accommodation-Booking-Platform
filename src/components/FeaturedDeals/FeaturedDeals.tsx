@@ -31,7 +31,7 @@ export default function FeaturedDeals() {
                 alignItems: 'center',
             }}>
                 <Typography variant="h2" gutterBottom sx={{
-                    color: "#3b8fab",
+                    color: "#174b71",
                     fontSize: { md: "50px", xs: "22px" },
                     marginBottom: '30px'
                 }}>

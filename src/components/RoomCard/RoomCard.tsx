@@ -48,18 +48,18 @@ export default function RoomCard({
                     <Typography variant="h4" sx={{ fontSize: "20px" }}>{hotelName}</Typography>
                     <Box sx={{ display: 'flex', alignItems: "center" }}>
                         <LocationOnIcon color="action" sx={{ fontSize: "20px" }} />
-                        <Typography sx={{ fontSize: "14px", color: "#3b8fab" }}>{cityName}</Typography>
+                        <Typography sx={{ fontSize: "14px", color: "#174b71" }}>{cityName}</Typography>
                     </Box>
                     <Divider />
                 </Box>
                 <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
                     <Box sx={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <Typography variant="h5" sx={{ color: "#3b8fab" }}>${finalPrice}</Typography>
+                        <Typography variant="h5" sx={{ color: "#174b71" }}>${finalPrice}</Typography>
                         <Typography sx={{ color: "#999", textDecoration: "line-through" }}>${originalRoomPrice}</Typography>
                     </Box>
                     <Typography sx={{
                         borderRadius: "50%",
-                        backgroundColor: "#3b8fab",
+                        backgroundColor: "#174b71",
                         display: "flex",
                         alignItems: "center",
                         padding: "8px 5px",

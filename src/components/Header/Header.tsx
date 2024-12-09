@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 
 export default function Header() {
@@ -14,6 +13,7 @@ export default function Header() {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             position: 'relative',
+            top: 0,
             overflow: 'hidden',
         }}>
             <Container sx={{ display: "flex", width: '100%', alignItems: 'center', flexDirection: 'column' }}>
