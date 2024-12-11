@@ -1,14 +1,41 @@
-import { useLocation } from "react-router-dom";
-import { Hotel } from "../../types/hotel";
+import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import SearchBox from "../../components/SearchBox";
 import styles from "./Search.module.css";
-import FiltersSection from "../../components/FiltersSection";
-import HotelCard from "../../components/HotelCard";
+import SearchResults from "../../components/SearchResults";
+import { Hotel } from "../../types/hotel";
 
-export default function Search() {
-    const location = useLocation();
-    const { results } = location.state || { results: [] };
+interface SearchProps {
+    results: Hotel[];
+}
+
+export default function Search({ results }: SearchProps) {
+    const [allHotels, setAllHotels] = useState<Hotel[]>(results);
+    const [filteredHotels, setFilteredHotels] = useState<Hotel[]>(results);
+
+    useEffect(() => {
+        setAllHotels(results);
+        setFilteredHotels(results);
+    }, [results]);
+
+    function handleFiltersChange(filters: {
+        amenities: string[];
+        stars: number[];
+        roomTypes: string[];
+    }) {
+        const { amenities, stars, roomTypes } = filters;
+
+        const filtered = allHotels.filter((hotel) => {
+            const matchesAmenities =
+                amenities.length === 0 || hotel.amenities.some((amenity) => amenities.includes(amenity.name));
+            const matchesStars = stars.length === 0 || stars.includes(hotel.starRating);
+            const matchesRoomTypes = roomTypes.length === 0 || roomTypes.includes(hotel.roomType);
+
+            return matchesAmenities && matchesStars && matchesRoomTypes;
+        });
+
+        setFilteredHotels(filtered);
+    }
 
     return (
         <div style={{ width: "100%" }}>
@@ -21,18 +48,11 @@ export default function Search() {
                 </div>
             </div>
             <div className={styles.searchContainer}>
-                <div style={{ padding: "16px", display: "flex", gap: "16px", justifyContent: "center",alignItems:"flex-start", width: "90%" }}>
-                    <FiltersSection />
-                    <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "16px",}}>
-                        {results.length > 0 ? (
-                            results.map((hotel: Hotel) => <HotelCard key={hotel.hotelId} hotel={hotel} />)
-                        ) : (
-                            <p>No results found.</p>
-                        )}
-                    </div>
-                </div>
+                <SearchResults
+                    results={filteredHotels}
+                    onFiltersChange={handleFiltersChange}
+                />
             </div>
         </div>
-
     );
 }

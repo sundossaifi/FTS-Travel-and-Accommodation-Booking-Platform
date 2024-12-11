@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import FilterCard from "../FilterCard";
 import { getAmenities } from "../../services/amenitiesService";
 
-export default function FiltersSection() {
+interface FiltersSectionProps {
+    onFiltersChange: (filters: { amenities: string[]; stars: number[]; roomTypes: string[] }) => void;
+}
+
+export default function FiltersSection({ onFiltersChange }: FiltersSectionProps) {
     const [amenities, setAmenities] = useState<{ label: string; value: string }[]>([]);
-    const [starRatings] = useState([5, 4, 3, 2, 1].map((rating) => ({ label: "", value: rating })));
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+    const [selectedStars, setSelectedStars] = useState<number[]>([]);
     const [selectedRoomTypes, setSelectedRoomTypes] = useState<string[]>([]);
 
     const roomTypes = ["Double", "King Suite", "Standard", "Cabin", "Ocean View"].map((type) => ({
@@ -29,36 +34,31 @@ export default function FiltersSection() {
         fetchAmenities();
     }, []);
 
-    function handleAmenityChange(selectedValues: string[]) {
-        console.log("Selected Amenities:", selectedValues);
-    }
-
-    function handleStarChange(selectedValues: number[]) {
-        console.log("Selected Star Ratings:", selectedValues);
-    }
-
-    function handleRoomTypeChange(selectedValues: string[]) {
-        setSelectedRoomTypes(selectedValues);
-        console.log("Selected Room Types:", selectedValues);
-    }
+    useEffect(() => {
+        onFiltersChange({
+            amenities: selectedAmenities,
+            stars: selectedStars,
+            roomTypes: selectedRoomTypes,
+        });
+    }, [selectedAmenities, selectedStars, selectedRoomTypes, onFiltersChange]);
 
     return (
         <div>
             <FilterCard<string>
                 title="Amenities"
                 items={amenities}
-                onChange={handleAmenityChange}
+                onChange={setSelectedAmenities}
             />
             <FilterCard<number>
                 title="Hotel Star"
-                items={starRatings}
+                items={[5, 4, 3, 2, 1].map((rating) => ({ label: "", value: rating }))} // Star Ratings
                 isStarFilter={true}
-                onChange={handleStarChange}
+                onChange={setSelectedStars}
             />
             <FilterCard<string>
                 title="Room Type"
                 items={roomTypes}
-                onChange={handleRoomTypeChange}
+                onChange={setSelectedRoomTypes}
             />
         </div>
     );

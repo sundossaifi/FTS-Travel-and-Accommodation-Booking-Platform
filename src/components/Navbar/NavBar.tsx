@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElCart, setAnchorElCart] = React.useState<null | HTMLElement>(null);
@@ -43,15 +44,15 @@ export default function Navbar() {
     };
 
     function handleNavigate(path: string) {
-        navigate(path);
+        navigate(path, { state: { results: [] } });
         handleCloseNavMenu();
-    };
+    }
 
     return (
         <AppBar position="absolute" sx={{
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             boxShadow: 'none',
-            top:0
+            top: 0
         }}>
             <Container maxWidth="xl" sx={{ width: "100%" }} >
                 <Toolbar disableGutters sx={{ display: 'flex', justifyContent: "space-between", width: "100%" }}>

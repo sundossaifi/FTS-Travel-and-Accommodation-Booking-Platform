@@ -7,7 +7,6 @@ import {
     Divider,
     Chip,
     Button,
-    CardActions
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import StarRating from "../StarRating";
@@ -50,9 +49,15 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                 height="270px"
                 image={hotel.roomPhotoUrl}
                 alt={hotel.hotelName}
-                sx={{ width: "300px" }}
+                sx={{ width: { md: "300px", xs: "100%" } }}
             />
-            <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "space-around" }}>
+            <CardContent sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+                alignItems: {xs:"center", md:"flex-start"},
+                width: { md: "25%", xs: "100%" }
+            }}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     <StarRating rating={hotel.starRating} />
                     <Typography variant="h4" sx={{ fontSize: "20px" }}>{hotel.hotelName}</Typography>
@@ -60,8 +65,9 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                         <LocationOnIcon color="action" sx={{ fontSize: "20px" }} />
                         <Typography sx={{ fontSize: "14px", color: "#174b71" }}>{hotel.cityName}</Typography>
                     </Box>
+                    <Divider />
                 </Box>
-                <Divider />
+
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                     {hotel.amenities.map((amenity) => (
                         <Chip
@@ -73,7 +79,6 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                     ))}
                 </Box>
             </CardContent>
-            <Divider orientation="vertical" />
             <Box
                 sx={{
                     flex: 1,
@@ -81,8 +86,9 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "space-around",
-                    paddingRight: { md: "20px", xs: "0px" },
                     paddingBottom: { xs: "20px", md: "0px" },
+                    borderLeft: { md: "solid 0.1px #f3f3f3" },
+                    borderTop: { xs: "solid 0.1px #f3f3f3" },
                 }}
             >
                 <Box>
