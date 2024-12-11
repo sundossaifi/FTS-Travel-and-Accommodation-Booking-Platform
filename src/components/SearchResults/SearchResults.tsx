@@ -3,7 +3,7 @@ import HotelCard from "../HotelCard";
 import { Grid2 } from "@mui/material";
 import { Hotel } from "../../types/hotel";
 import styles from "./SearchResults.module.css";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 interface SearchResultsProps {
     results: Hotel[];
@@ -12,24 +12,27 @@ interface SearchResultsProps {
 export default function SearchResults({ results }: SearchResultsProps) {
     const [filteredResults, setFilteredResults] = useState<Hotel[]>(results);
 
-    function handleFilterChange(filters: { amenities: string[]; stars: number[]; roomTypes: string[] }) {
-        const { amenities, stars, roomTypes } = filters;
+    const handleFilterChange = useCallback(
+        (filters: { amenities: string[]; stars: number[]; roomTypes: string[] }) => {
+            const { amenities, stars, roomTypes } = filters;
 
-        const filtered = results.filter((hotel) => {
-            const matchesAmenities = amenities.length
-                ? amenities.every((amenity) =>
-                    hotel.amenities.some((hotelAmenity) => hotelAmenity.name === amenity)
-                )
-                : true;
-            const matchesStars = stars.length ? stars.includes(hotel.starRating) : true;
+            const filtered = results.filter((hotel) => {
+                const matchesAmenities = amenities.length
+                    ? amenities.every((amenity) =>
+                        hotel.amenities.some((hotelAmenity) => hotelAmenity.name === amenity)
+                    )
+                    : true;
+                const matchesStars = stars.length ? stars.includes(hotel.starRating) : true;
 
-            const matchesRoomType = roomTypes.length ? roomTypes.includes(hotel.roomType) : true;
+                const matchesRoomType = roomTypes.length ? roomTypes.includes(hotel.roomType) : true;
 
-            return matchesAmenities && matchesStars && matchesRoomType;
-        });
+                return matchesAmenities && matchesStars && matchesRoomType;
+            });
 
-        setFilteredResults(filtered);
-    }
+            setFilteredResults(filtered);
+        },
+        [results] 
+    );
 
     return (
         <div className={styles.searchResultsContainer}>

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import Hotel from './pages/Hotel/Hotel';
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <SearchProvider>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </SearchProvider>
   )
 

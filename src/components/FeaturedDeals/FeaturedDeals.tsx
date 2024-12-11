@@ -39,9 +39,8 @@ export default function FeaturedDeals() {
                 </Typography>
                 <Grid2 container spacing={{ xs: 2, md: 3 }} alignItems={'center'} >
                     {featuredDeals.map((deal) => (
-                        <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
+                        <Grid2 key={deal.hotelId} size={{ xs: 12, sm: 6, md: 4 }}>
                             <RoomCard
-                                key={deal.hotelId}
                                 originalRoomPrice={deal.originalRoomPrice}
                                 finalPrice={deal.finalPrice}
                                 hotelName={deal.hotelName}

@@ -77,6 +77,7 @@ export default function SearchBox() {
                 adults: adults,
                 children: children,
             });
+            navigate("/search-results");
             setResults(results);
         } catch (error) {
             console.error("Error while searching for hotels:", error);
@@ -257,6 +258,7 @@ export default function SearchBox() {
                 {/* Search Button */}
                 <Box sx={{ padding: "0 16px" }}>
                     <Button
+                    type="button"
                         variant="contained"
                         color="primary"
                         onClick={handleSearch}
