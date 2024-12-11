@@ -1,41 +1,12 @@
-import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import SearchBox from "../../components/SearchBox";
-import styles from "./Search.module.css";
 import SearchResults from "../../components/SearchResults";
-import { Hotel } from "../../types/hotel";
+import styles from "./Search.module.css";
+import { useSearch } from "../../context/SearchContext";
 
-interface SearchProps {
-    results: Hotel[];
-}
 
-export default function Search({ results }: SearchProps) {
-    const [allHotels, setAllHotels] = useState<Hotel[]>(results);
-    const [filteredHotels, setFilteredHotels] = useState<Hotel[]>(results);
-
-    useEffect(() => {
-        setAllHotels(results);
-        setFilteredHotels(results);
-    }, [results]);
-
-    function handleFiltersChange(filters: {
-        amenities: string[];
-        stars: number[];
-        roomTypes: string[];
-    }) {
-        const { amenities, stars, roomTypes } = filters;
-
-        const filtered = allHotels.filter((hotel) => {
-            const matchesAmenities =
-                amenities.length === 0 || hotel.amenities.some((amenity) => amenities.includes(amenity.name));
-            const matchesStars = stars.length === 0 || stars.includes(hotel.starRating);
-            const matchesRoomTypes = roomTypes.length === 0 || roomTypes.includes(hotel.roomType);
-
-            return matchesAmenities && matchesStars && matchesRoomTypes;
-        });
-
-        setFilteredHotels(filtered);
-    }
+export default function Search() {
+    const { results } = useSearch();
 
     return (
         <div style={{ width: "100%" }}>
@@ -48,10 +19,7 @@ export default function Search({ results }: SearchProps) {
                 </div>
             </div>
             <div className={styles.searchContainer}>
-                <SearchResults
-                    results={filteredHotels}
-                    onFiltersChange={handleFiltersChange}
-                />
+                <SearchResults results={results} />
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import Search from './pages/Search/Search';
 import Hotel from './pages/Hotel/Hotel';
 import Checkout from './pages/Checkout/Checkout';
 import NotFound from './pages/NotFound/NotFound';
+import { SearchProvider } from "./context/SearchContext";
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/search-results',
-    element: <SearchWrapper />,
+    element: <Search />,
   },
   {
     path: '/hotel/:id',
@@ -28,15 +29,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-function SearchWrapper() {
-  const location = useLocation();
-  const { results } = location.state || { results: [] };
-
-  return <Search results={results} key={location.key} />;
-}
-
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <SearchProvider>
+      <RouterProvider router={router} />;
+    </SearchProvider>
+  )
+
 }
 
 export default App;

@@ -15,13 +15,11 @@ import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import { useNavigate } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElCart, setAnchorElCart] = React.useState<null | HTMLElement>(null);
-    const navigate = useNavigate();
 
     const pages = [
         { name: 'Home', path: '/' },
@@ -35,6 +33,7 @@ export default function Navbar() {
     function handleCloseNavMenu() {
         setAnchorElNav(null);
     };
+
     function handleOpenCartMenu(event: React.MouseEvent<HTMLElement>) {
         setAnchorElCart(event.currentTarget);
     };
@@ -43,18 +42,13 @@ export default function Navbar() {
         setAnchorElCart(null);
     };
 
-    function handleNavigate(path: string) {
-        navigate(path, { state: { results: [] } });
-        handleCloseNavMenu();
-    }
-
     return (
         <AppBar position="absolute" sx={{
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
             boxShadow: 'none',
             top: 0
         }}>
-            <Container maxWidth="xl" sx={{ width: "100%" }} >
+            <Container maxWidth="xl" sx={{ width: "100%" }}>
                 <Toolbar disableGutters sx={{ display: 'flex', justifyContent: "space-between", width: "100%" }}>
                     <Box sx={{ display: 'flex', justifyContent: "space-around", alignItems: "center", width: "100%" }}>
                         <Box sx={{ display: 'flex' }}>
@@ -62,8 +56,8 @@ export default function Navbar() {
                             <Typography
                                 variant="h6"
                                 noWrap
-                                component="a"
-                                href=""
+                                component={Link}
+                                to="/"
                                 sx={{
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
@@ -102,9 +96,14 @@ export default function Navbar() {
                                 sx={{ display: { xs: 'block', md: 'none' } }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem key={page.name}
-                                        onClick={() => handleNavigate(page.path)}>
-                                        <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                        <Typography
+                                            component={Link}
+                                            to={page.path}
+                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+                                        >
+                                            {page.name}
+                                        </Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>
@@ -113,8 +112,8 @@ export default function Navbar() {
                         <Typography
                             variant="h5"
                             noWrap
-                            component="a"
-                            href=""
+                            component={Link}
+                            to="/"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'flex', md: 'none' },
@@ -133,7 +132,8 @@ export default function Navbar() {
                                 {pages.map((page) => (
                                     <Button
                                         key={page.name}
-                                        onClick={() => handleNavigate(page.path)}
+                                        component={Link}
+                                        to={page.path}
                                         sx={{ my: 2, color: 'white', display: 'block' }}
                                     >
                                         {page.name}
@@ -175,11 +175,14 @@ export default function Navbar() {
                                 sx={{ display: "flex" }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem
-                                        key={page.name}
-                                        onClick={() => handleNavigate(page.path)}
-                                    >
-                                        <Typography sx={{ textAlign: 'center' }}>{page.name}</Typography>
+                                    <MenuItem key={page.name} onClick={handleCloseCartMenu}>
+                                        <Typography
+                                            component={Link}
+                                            to={page.path}
+                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
+                                        >
+                                            {page.name}
+                                        </Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>
@@ -196,4 +199,3 @@ export default function Navbar() {
         </AppBar>
     );
 }
-

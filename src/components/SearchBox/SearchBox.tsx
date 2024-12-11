@@ -21,11 +21,13 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { searchHotels } from "../../services/homeService";
+import { useSearch } from "../../context/SearchContext";
 
 export default function SearchBox() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
+    const { setResults } = useSearch();
 
     const [location, setLocation] = useState<string>("");
     const [checkInDate, setCheckInDate] = useState<Date | null>(today);
@@ -75,7 +77,7 @@ export default function SearchBox() {
                 adults: adults,
                 children: children,
             });
-            navigate("/search-results", { state: { results } });
+            setResults(results);
         } catch (error) {
             console.error("Error while searching for hotels:", error);
         }
