@@ -9,7 +9,7 @@ export default function TrendingDestinations() {
     const [destinations, setDestinations] = useState<TrendingDestination[]>([]);
 
     useEffect(() => {
-        const fetchDestinations = async () => {
+        async function fetchDestinations() {
             try {
                 const data = await getTrendingDestinations();
                 setDestinations(data);

@@ -9,7 +9,7 @@ export default function FeaturedDeals() {
     const [featuredDeals, setFeaturedDeals] = useState<FeaturedDeal[]>([]);
 
     useEffect(() => {
-        const fetchDeals = async () => {
+        async function fetchDeals() {
             try {
                 const deals = await getFeaturedDeals();
                 setFeaturedDeals(deals);

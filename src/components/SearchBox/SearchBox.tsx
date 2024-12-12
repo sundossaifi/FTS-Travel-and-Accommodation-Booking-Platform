@@ -67,7 +67,7 @@ export default function SearchBox() {
         return date ? format(date, "yyyy-MM-dd") : null;
     };
 
-    const handleSearch = async () => {
+    async function handleSearch() {
         try {
             const results = await searchHotels({
                 checkInDate: getFormattedDate(checkInDate) || "",
@@ -99,7 +99,7 @@ export default function SearchBox() {
                     maxWidth: "75%",
                     margin: "0 auto",
                     position: { md: "absolute", xs: 'unset' },
-                    marginTop: { md: "-35px", xs: "0px" },
+                    marginTop: { md: "-15px", xs: "0px" },
                     marginBottom: { md: "0px", xs: "20px" }
                 }}
             >
@@ -188,7 +188,7 @@ export default function SearchBox() {
                 <Divider orientation={"vertical"} sx={{ display: { xs: "none", md: "flex" } }} flexItem />
 
                 {/* Guests Field */}
-                <Box sx={{ flex: 1, display: "flex", alignItems: "center", padding: "0 16px" }}>
+                <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 16px" }}>
                     <PersonIcon color="action" />
                     <Box ml={1}>
                         <Typography variant="caption" sx={{ color: "gray" }}>
@@ -258,7 +258,7 @@ export default function SearchBox() {
                 {/* Search Button */}
                 <Box sx={{ padding: "0 16px" }}>
                     <Button
-                    type="button"
+                        type="button"
                         variant="contained"
                         color="primary"
                         onClick={handleSearch}

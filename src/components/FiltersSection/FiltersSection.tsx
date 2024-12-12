@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterCard from "../FilterCard";
+import PriceFilterCard from "../PriceFilterCard"; // Import the new component
 import { getAmenities } from "../../services/amenitiesService";
+import { Button } from "@mui/material";
 
 interface FiltersSectionProps {
-    onFilterChange: (filters: { amenities: string[]; stars: number[]; roomTypes: string[] }) => void;
+    onFilterChange: (filters: { amenities: string[]; stars: number[]; roomTypes: string[]; priceRange: [number, number] }) => void;
 }
 
 export default function FiltersSection({ onFilterChange }: FiltersSectionProps) {
@@ -11,6 +13,8 @@ export default function FiltersSection({ onFilterChange }: FiltersSectionProps) 
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [selectedStars, setSelectedStars] = useState<number[]>([]);
     const [selectedRoomTypes, setSelectedRoomTypes] = useState<string[]>([]);
+    const [selectedPriceRange, setSelectedPriceRange] = useState<[number, number]>([0, 1000]);
+
     const starRatings = [5, 4, 3, 2, 1].map((rating) => ({ label: "", value: rating }));
     const roomTypes = ["Double", "King Suite", "Standard", "Cabin", "Ocean View"].map((type) => ({
         label: type,
@@ -33,12 +37,18 @@ export default function FiltersSection({ onFilterChange }: FiltersSectionProps) 
         fetchAmenities();
     }, []);
 
-    useEffect(() => {
-        onFilterChange({ amenities: selectedAmenities, stars: selectedStars, roomTypes: selectedRoomTypes });
-    }, [selectedAmenities, selectedStars, selectedRoomTypes, onFilterChange]);
+    function applyFilters() {
+        onFilterChange({
+            amenities: selectedAmenities,
+            stars: selectedStars,
+            roomTypes: selectedRoomTypes,
+            priceRange: selectedPriceRange,
+        });
+    }
 
     return (
-        <div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <PriceFilterCard onChange={setSelectedPriceRange} />
             <FilterCard<string>
                 title="Amenities"
                 items={amenities}
@@ -55,6 +65,22 @@ export default function FiltersSection({ onFilterChange }: FiltersSectionProps) 
                 items={roomTypes}
                 onChange={setSelectedRoomTypes}
             />
+            <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                onClick={applyFilters}
+                sx={{
+                    borderRadius: "10px",
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    textTransform: "none",
+                    width: { xs: "50%" },
+                    backgroundColor: "#174b71",
+                }}
+            >
+                Apply filters
+            </Button>
         </div>
     );
 }

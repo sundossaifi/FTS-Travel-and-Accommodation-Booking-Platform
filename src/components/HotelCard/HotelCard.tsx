@@ -27,7 +27,7 @@ interface HotelCardProps {
 }
 
 export default function HotelCard({ hotel }: HotelCardProps) {
-    const discountedPrice = hotel.roomPrice - hotel.roomPrice * hotel.discount;
+
 
     return (
         <Card
@@ -55,7 +55,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-around",
-                alignItems: {xs:"center", md:"flex-start"},
+                alignItems: { xs: "center", md: "flex-start" },
                 width: { md: "25%", xs: "100%" }
             }}>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -96,7 +96,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                         {hotel.starRating}/5
                     </Typography>
                     <Typography variant="body2">
-                        From: <Typography component="span" sx={{ fontWeight: "bold", color: "#174b71" }}>${discountedPrice.toFixed(0)}</Typography> /night
+                        From: <Typography component="span" sx={{ fontWeight: "bold", color: "#174b71" }}>${hotel.roomPrice}</Typography> /night
                     </Typography>
                 </Box>
                 <Button
