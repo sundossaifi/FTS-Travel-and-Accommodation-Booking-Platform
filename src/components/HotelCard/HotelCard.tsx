@@ -7,6 +7,7 @@ import {
     Divider,
     Chip,
     Button,
+    CardActions,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import StarRating from "../StarRating";
@@ -79,7 +80,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                     ))}
                 </Box>
             </CardContent>
-            <Box
+            <CardActions
                 sx={{
                     flex: 1,
                     display: "flex",
@@ -111,7 +112,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                 >
                     View details
                 </Button>
-            </Box>
+            </CardActions>
         </Card>
     );
 }

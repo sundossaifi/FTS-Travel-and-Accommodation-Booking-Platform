@@ -6,6 +6,15 @@
 
 .searchResultsContainer {
     width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 3rem;
+}
+
+@media (max-width:1000px) {
+    .searchResultsContainer {
+        width: 90%;
+    }
 }
 

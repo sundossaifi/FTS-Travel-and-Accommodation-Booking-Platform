@@ -29,7 +29,7 @@ export default function PriceFilterCard({ onChange }: PriceFilterCardProps) {
                 padding: "16px",
                 marginBottom: "16px",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                width: "250px",
+                // width: "250px",
             }}
         >
             <Box
@@ -67,7 +67,7 @@ export default function PriceFilterCard({ onChange }: PriceFilterCardProps) {
                             display: "flex",
                             flexDirection: "column",
                             backgroundColor: "white",
-                            padding: "4px 12px",
+                            padding: "4px 5px",
                             borderRadius: "10px",
                             border: "1px solid #DEDEDE",
                         }}>
@@ -83,7 +83,7 @@ export default function PriceFilterCard({ onChange }: PriceFilterCardProps) {
                             display: "flex",
                             flexDirection: "column",
                             backgroundColor: "white",
-                            padding: "4px 12px",
+                            padding: "4px 5px",
                             borderRadius: "10px",
                             border: "1px solid #DEDEDE",
                         }}>

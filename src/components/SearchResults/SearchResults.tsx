@@ -87,8 +87,8 @@ export default function SearchResults() {
 
     return (
         <div className={styles.searchResultsContainer}>
-            <Grid2 container spacing={{ xs: 2, md: 3 }} columnSpacing={{ sm: 30 }}>
-                <Grid2 size={{ xs: 12, md: 3 }} sx={{ display: { xs: "none", md: "flex" } }}>
+            <Grid2 container spacing={{ xs: 2, md: 3 }} sx={{ width: "100%" }} >
+                <Grid2 size={{xs:12,md:3}} sx={{ display: { xs: "none", md: "block" } }}>
                     <FiltersSection onFilterChange={handleFilterChange} />
                 </Grid2>
 
@@ -175,16 +175,25 @@ export default function SearchResults() {
                             </MenuItem>
                         </Menu>
                     </Box>
-
-                    <div className={styles.hotelCardsContainer}>
+                    <Grid2
+                        container
+                        spacing={2}
+                    >
                         {filteredResults && filteredResults.length > 0 ? (
                             filteredResults.map((hotel) => (
-                                <HotelCard key={hotel.hotelId} hotel={hotel} />
+                                <Grid2
+                                    size={{ xs: 12, sm: 6, md: 12 }}
+                                    key={hotel.hotelId}
+                                >
+                                    <HotelCard hotel={hotel} />
+                                </Grid2>
                             ))
                         ) : (
-                            <p>No results found.</p>
+                            <Grid2 size={{ xs: 12 }} >
+                                <p>No results found.</p>
+                            </Grid2>
                         )}
-                    </div>
+                    </Grid2>
                 </Grid2>
             </Grid2>
 

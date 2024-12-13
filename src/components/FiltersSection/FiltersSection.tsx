@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FilterCard from "../FilterCard";
 import PriceFilterCard from "../PriceFilterCard"; // Import the new component
 import { getAmenities } from "../../services/amenitiesService";
@@ -75,7 +75,7 @@ export default function FiltersSection({ onFilterChange }: FiltersSectionProps) 
                     padding: "10px 20px",
                     fontSize: "16px",
                     textTransform: "none",
-                    width: { xs: "50%" },
+                    width: "60%" ,
                     backgroundColor: "#174b71",
                 }}
             >
