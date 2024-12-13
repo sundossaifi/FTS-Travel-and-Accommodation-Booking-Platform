@@ -1,6 +1,7 @@
 import Navbar from "../../components/Navbar";
 import SearchBox from "../../components/SearchBox";
 import SearchResults from "../../components/SearchResults";
+import Footer from "../../components/Footer";
 import styles from "./Search.module.css";
 
 export default function Search() {
@@ -15,8 +16,9 @@ export default function Search() {
                 </div>
             </div>
             <div className={styles.searchContainer}>
-                <SearchResults /> 
+                <SearchResults />
             </div>
+            <Footer />
         </div>
     );
 }
