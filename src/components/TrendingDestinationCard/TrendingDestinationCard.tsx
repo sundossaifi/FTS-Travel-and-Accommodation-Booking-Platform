@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Card, CardMedia, Typography } from "@mui/material";
 
 interface TrendingDestinationCardProps {
     cityName: string;
@@ -8,40 +8,31 @@ interface TrendingDestinationCardProps {
 
 export default function TrendingDestinationCard({ cityName, countryName, thumbnailUrl }: TrendingDestinationCardProps) {
     return (
-        <Box
+        <Card
             sx={{
-                position: "relative",
-                borderRadius: "16px",
-                overflow: "hidden",
-                width: "350px",
-                height: "250px",
+                maxWidth: 345,
+                borderRadius: 4,
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+                position: "relative",
             }}
         >
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    backgroundImage: `url(${thumbnailUrl})`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: "brightness(0.7)",
-                    overflow: "hidden",
-                }}
+            <CardMedia
+                component="img"
+                height="250"
+                image={thumbnailUrl}
+                alt={cityName}
+                sx={{ filter: "brightness(0.7)" }}
             />
             <Box
                 sx={{
                     position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "white",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "#fff",
+                    textAlign: "center",
+                    borderRadius: 2,
                 }}
             >
                 <Typography variant="h4" sx={{ fontWeight: 700 }}>
@@ -51,6 +42,7 @@ export default function TrendingDestinationCard({ cityName, countryName, thumbna
                     {countryName}
                 </Typography>
             </Box>
-        </Box>
+        </Card>
+
     );
 }
