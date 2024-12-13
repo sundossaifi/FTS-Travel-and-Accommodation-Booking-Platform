@@ -22,7 +22,7 @@ export default function TrendingDestinations() {
     }, [])
 
     return (
-        <section className={styles.TrendingDestinationsContainer} >
+        <section className={styles.trendingDestinationsContainer} >
             <Box sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -37,7 +37,7 @@ export default function TrendingDestinations() {
                 }}>
                     Trending Destinations
                 </Typography>
-                <Grid2 container spacing={{ xs: 2, md: 3 }} columnSpacing={{ xs: 2, sm: 10, md: 3 }} alignItems={'center'}>
+                <Grid2 container spacing={{ xs: 2, sm: 10, md: 3 }} columnSpacing={{ xs: 2, sm: 10, md: 15 }} alignItems={'center'}>
                     {destinations.map((destination) => (
                         <Grid2 key={destination.cityId} size={{ xs: 12, sm: 6, md: 4 }}>
                             <TrendingDestinationCard

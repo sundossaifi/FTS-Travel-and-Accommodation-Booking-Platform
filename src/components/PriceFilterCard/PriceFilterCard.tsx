@@ -55,7 +55,7 @@ export default function PriceFilterCard({ onChange }: PriceFilterCardProps) {
                         min={0}
                         max={1000}
                         step={10}
-                        sx={{ marginBottom: 2 }}
+                        sx={{ marginBottom: 2 ,color:"#174b71"}}
                     />
                     <Box sx={{
                         display: "flex",
