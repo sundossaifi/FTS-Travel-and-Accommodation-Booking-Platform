@@ -9,6 +9,7 @@ import { GalleryImage, HotelDetails, Review } from "../../types/hotel";
 import HotelGallery from "../../components/HotelGallery";
 import Navbar from "../../components/Navbar";
 import HotelInfo from "../../components/HotelInfo";
+import MapComponent from "../../components/MapComponent";
 import styles from "./Hotel.module.css";
 import { Typography } from "@mui/material";
 
@@ -80,6 +81,12 @@ export default function Hotel() {
                         />
                     )}
                     <HotelGallery images={galleryImages} />
+                    {hotelDetails && (
+                        <MapComponent
+                            lat={hotelDetails.latitude}
+                            lng={hotelDetails.longitude}
+                        />
+                    )}
 
                     {/* Hotel Reviews
                     {reviews.length > 0 && (
