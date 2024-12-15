@@ -1,0 +1,24 @@
+.hotelPageContainer {
+    width: 100%;
+}
+
+.headerContainer {
+    background-image: url(https://andtour-react.netlify.app/static/media/bg.70c7fc62f19b1932f5eb.png);
+    min-height: 60vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.hotelDetailsContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

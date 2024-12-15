@@ -27,11 +27,10 @@ export default function SearchBox() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    const { setResults } = useSearch();
-
+    const { setResults, setCheckInDate, setCheckOutDate } = useSearch();
     const [location, setLocation] = useState<string>("");
-    const [checkInDate, setCheckInDate] = useState<Date | null>(today);
-    const [checkOutDate, setCheckOutDate] = useState<Date | null>(tomorrow);
+    const [localCheckInDate, setLocalCheckInDate] = useState<Date | null>(today);
+    const [localCheckOutDate, setLocalCheckOutDate] = useState<Date | null>(tomorrow);
 
     const [guests, setGuests] = useState<string>("1 guest, 1 room");
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -68,10 +67,15 @@ export default function SearchBox() {
     };
 
     async function handleSearch() {
+        const formattedCheckInDate = getFormattedDate(localCheckInDate);
+        const formattedCheckOutDate = getFormattedDate(localCheckOutDate);
+
+        setCheckInDate(formattedCheckInDate);
+        setCheckOutDate(formattedCheckOutDate);
         try {
             const results = await searchHotels({
-                checkInDate: getFormattedDate(checkInDate) || "",
-                checkOutDate: getFormattedDate(checkOutDate) || "",
+                checkInDate: getFormattedDate(localCheckInDate) || "",
+                checkOutDate: getFormattedDate(localCheckInDate) || "",
                 city: location,
                 numberOfRooms: rooms,
                 adults: adults,
@@ -148,8 +152,8 @@ export default function SearchBox() {
                         </Typography>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                value={checkInDate}
-                                onChange={(newValue) => setCheckInDate(newValue)}
+                                value={localCheckInDate}
+                                onChange={(newValue) => setLocalCheckInDate(newValue)}
                                 slotProps={{
                                     textField: {
                                         variant: "standard",
@@ -172,8 +176,8 @@ export default function SearchBox() {
                         </Typography>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                value={checkOutDate}
-                                onChange={(newValue) => setCheckOutDate(newValue)}
+                                value={localCheckOutDate}
+                                onChange={(newValue) => setLocalCheckOutDate(newValue)}
                                 slotProps={{
                                     textField: {
                                         variant: "standard",

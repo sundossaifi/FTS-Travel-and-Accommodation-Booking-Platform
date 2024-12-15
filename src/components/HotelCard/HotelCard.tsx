@@ -12,6 +12,8 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import StarRating from "../StarRating";
 import { Amenity } from "../../types/hotel";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../../context/SearchContext";
 
 interface HotelCardProps {
     hotel: {
@@ -28,7 +30,17 @@ interface HotelCardProps {
 }
 
 export default function HotelCard({ hotel }: HotelCardProps) {
+    const navigate = useNavigate();
+    const { checkInDate, checkOutDate } = useSearch();
 
+    function handleViewDetails() {
+        navigate(`/hotel/${hotel.hotelId}`, {
+            state: {
+                checkInDate,
+                checkOutDate,
+            },
+        });
+    }
 
     return (
         <Card
@@ -101,6 +113,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
                     </Typography>
                 </Box>
                 <Button
+                    onClick={handleViewDetails}
                     variant="contained"
                     sx={{
                         backgroundColor: "#174b71",

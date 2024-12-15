@@ -1,7 +1,6 @@
 import { BASE_URL } from "./config";
 import { Hotel, FeaturedDeal, } from "../types/hotel";
 import { TrendingDestination } from "../types/destination";
-
 // Function to search hotels
 export async function searchHotels({
     checkInDate,
@@ -75,3 +74,5 @@ export async function getTrendingDestinations(): Promise<TrendingDestination[]> 
         throw error;
     }
 }
+
+
