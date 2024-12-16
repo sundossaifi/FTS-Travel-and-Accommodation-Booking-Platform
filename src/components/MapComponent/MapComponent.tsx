@@ -14,7 +14,6 @@ function MapComponent({ lat, lng }: MapComponentProps) {
     return (
         <APIProvider apiKey={apiKey}>
             <div style={{
-                width: "400px",
                 height: "250px",
                 borderRadius: "20px",
                 overflow: "hidden", 

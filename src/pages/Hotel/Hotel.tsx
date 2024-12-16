@@ -4,12 +4,17 @@ import {
     fetchHotelGallery,
     fetchHotelDetails,
     fetchHotelReviews,
+    fetchAvailableRooms
 } from "../../services/hotelService";
 import { GalleryImage, HotelDetails, Review } from "../../types/hotel";
+import { Room } from "../../types/room";
 import HotelGallery from "../../components/HotelGallery";
 import Navbar from "../../components/Navbar";
 import HotelInfo from "../../components/HotelInfo";
-import MapComponent from "../../components/MapComponent";
+import HotelDetailsComponent from "../../components/HotelDetailsComponent";
+import AvailableRooms from "../../components/AvailableRooms";
+import Footer from "../../components/Footer";
+import { useSearch } from "../../context/SearchContext";
 import styles from "./Hotel.module.css";
 import { Typography } from "@mui/material";
 
@@ -19,7 +24,11 @@ export default function Hotel() {
     const [galleryImages, setGalleryImages] = useState<string[]>([]);
     const [hotelDetails, setHotelDetails] = useState<HotelDetails | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [rooms, setRooms] = useState<Room[]>([]);
     const [error, setError] = useState<string | null>(null);
+
+    const { checkInDate, checkOutDate } = useSearch();
+
 
     useEffect(() => {
         async function loadData() {
@@ -41,8 +50,13 @@ export default function Hotel() {
                 // Fetch reviews
                 const hotelReviews: Review[] = await fetchHotelReviews(id);
                 setReviews(hotelReviews);
+                //Fetch available rooms
+                if (checkInDate && checkOutDate) {
+                    const availableRooms: Room[] = await fetchAvailableRooms(id, checkInDate, checkOutDate);
+                    setRooms(availableRooms);
+                }
 
-                setError(null); // Clear any previous errors
+                setError(null);
             } catch (err) {
                 console.error("Error loading hotel data:", err);
                 setError("Failed to load hotel data.");
@@ -50,7 +64,7 @@ export default function Hotel() {
         }
 
         loadData();
-    }, [id]);
+    }, [id, checkInDate, checkOutDate]);
 
     if (error) {
         return <div style={{ color: "red", textAlign: "center" }}>{error}</div>;
@@ -82,10 +96,16 @@ export default function Hotel() {
                     )}
                     <HotelGallery images={galleryImages} />
                     {hotelDetails && (
-                        <MapComponent
+                        <HotelDetailsComponent
+                            hotelDescription={hotelDetails.description}
                             lat={hotelDetails.latitude}
                             lng={hotelDetails.longitude}
+                            amenities={hotelDetails.amenities}
                         />
+                    )}
+
+                    {rooms.length > 0 && (
+                        <AvailableRooms rooms={rooms}/>
                     )}
 
                     {/* Hotel Reviews
@@ -105,6 +125,7 @@ export default function Hotel() {
                     )} */}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }
