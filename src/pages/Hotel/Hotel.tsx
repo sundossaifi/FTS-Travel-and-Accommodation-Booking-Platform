@@ -13,10 +13,11 @@ import Navbar from "../../components/Navbar";
 import HotelInfo from "../../components/HotelInfo";
 import HotelDetailsComponent from "../../components/HotelDetailsComponent";
 import AvailableRooms from "../../components/AvailableRooms";
+import ReviewCard from "../../components/ReviewCard";
 import Footer from "../../components/Footer";
 import { useSearch } from "../../context/SearchContext";
 import styles from "./Hotel.module.css";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export default function Hotel() {
     const { id } = useParams<{ id: string }>();
@@ -105,24 +106,35 @@ export default function Hotel() {
                     )}
 
                     {rooms.length > 0 && (
-                        <AvailableRooms rooms={rooms}/>
+                        <AvailableRooms rooms={rooms} />
                     )}
 
-                    {/* Hotel Reviews
                     {reviews.length > 0 && (
-                        <div className={styles.reviewsContainer}>
-                            <h4>Customer Reviews</h4>
+                        <Box sx={{
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            mt: "3rem",
+                        }}>
+                            <Typography variant="h2" gutterBottom sx={{
+                                fontSize: "26px",
+                                fontWeight: "700",
+                                lineHeight: "36px",
+                                mb: "2rem"
+                            }}>
+                                Reviews
+                            </Typography>
                             {reviews.map((review) => (
-                                <div key={review.reviewId} className={styles.reviewCard}>
-                                    <p>
-                                        <strong>{review.customerName}</strong> rated it{" "}
-                                        <strong>{review.rating}/5</strong>
-                                    </p>
-                                    <p>{review.description}</p>
-                                </div>
+                                <ReviewCard
+                                    key={review.reviewId}
+                                    customerName={review.customerName}
+                                    rating={review.rating}
+                                    description={review.description}
+                                />
                             ))}
-                        </div>
-                    )} */}
+                        </Box>
+                    )}
                 </div>
             </div>
             <Footer />
