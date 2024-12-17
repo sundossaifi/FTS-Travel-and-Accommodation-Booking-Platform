@@ -1,4 +1,3 @@
-import { RoomAmenity } from "../../types/room";
 import {
     Box,
     Typography,
@@ -10,19 +9,31 @@ import {
 } from "@mui/material";
 import ChildCareIcon from '@mui/icons-material/ChildCare';
 import Person2Icon from '@mui/icons-material/Person2';
+import { useCart } from "../../context/CartContext";
 
 interface AvailableRoomCardProps {
+    roomId: number;
     roomPhotoUrl: string;
     roomType: string;
     capacityOfAdults: number;
     capacityOfChildren: number;
-    roomAmenities: RoomAmenity[];
     price: number;
 }
 
 export default function AvailableRoomCard({
-    roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, roomAmenities, price
+    roomId, roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, price
 }: AvailableRoomCardProps) {
+    const { addToCart } = useCart();
+
+    function handleAddToCart() {
+        addToCart({
+            roomId: roomId.toString(),
+            roomType,
+            price,
+            roomPhotoUrl,
+        });
+    }
+
     return (
         <Card sx={{
             maxWidth: 345,
@@ -90,6 +101,7 @@ export default function AvailableRoomCard({
                         </Typography>
                     </Box>
                     <Button
+                        onClick={handleAddToCart}
                         type="button"
                         variant="contained"
                         color="primary"

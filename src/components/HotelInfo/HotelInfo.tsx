@@ -5,8 +5,9 @@ interface HotelInfoPros {
     hotelLocation: string;
     starRating: number;
     reviewsCount: number;
+    onReserveClick: () => void;
 }
-export default function HotelInfo({ hotelLocation, starRating, reviewsCount }: HotelInfoPros) {
+export default function HotelInfo({ hotelLocation, starRating, reviewsCount, onReserveClick }: HotelInfoPros) {
     return (
         <Box sx={{ width: "100%", mt: "3rem" }}>
             <Grid2 container justifyContent={"space-between"}>
@@ -36,6 +37,7 @@ export default function HotelInfo({ hotelLocation, starRating, reviewsCount }: H
                 </Grid2>
                 <Grid2>
                     <Button
+                        onClick={onReserveClick}
                         type="button"
                         variant="contained"
                         color="primary"

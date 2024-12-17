@@ -1,10 +1,11 @@
-import { createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import Hotel from './pages/Hotel/Hotel';
 import Checkout from './pages/Checkout/Checkout';
 import NotFound from './pages/NotFound/NotFound';
 import { SearchProvider } from "./context/SearchContext";
+import { CartProvider } from './context/CartContext';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <SearchProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </SearchProvider>
   )
 

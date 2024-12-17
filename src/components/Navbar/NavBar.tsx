@@ -10,37 +10,46 @@ import {
     Button,
     MenuItem,
     Badge,
+    Divider,
+    Drawer,
 } from '@mui/material';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import { Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import CartCard from '../CartCard';
 
 export default function Navbar() {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElCart, setAnchorElCart] = React.useState<null | HTMLElement>(null);
+    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+    const { cart, removeFromCart } = useCart();
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
+    const navigate = useNavigate();
 
     const pages = [
         { name: 'Home', path: '/' },
         { name: 'Search', path: '/search-results' },
-    ];
+    ]
 
     function handleOpenNavMenu(event: React.MouseEvent<HTMLElement>) {
         setAnchorElNav(event.currentTarget);
-    };
+    }
 
     function handleCloseNavMenu() {
         setAnchorElNav(null);
-    };
+    }
 
-    function handleOpenCartMenu(event: React.MouseEvent<HTMLElement>) {
-        setAnchorElCart(event.currentTarget);
-    };
+    function handleCheckout() {
+        navigate('/checkout');
+        setDrawerOpen(false);
+    }
 
-    function handleCloseCartMenu() {
-        setAnchorElCart(null);
-    };
+    function toggleDrawer(open: boolean) {
+        setDrawerOpen(open);
+    }
 
     return (
         <AppBar position="absolute" sx={{
@@ -146,10 +155,10 @@ export default function Navbar() {
                         <Box>
                             <IconButton
                                 size="large"
-                                onClick={handleOpenCartMenu}
+                                onClick={() => toggleDrawer(true)}
                                 color='inherit'
                             >
-                                <Badge badgeContent={5} sx={{
+                                <Badge badgeContent={cart.length} sx={{
                                     "& .MuiBadge-badge": {
                                         backgroundColor: "#174b71",
                                         color: "#ffffff"
@@ -158,34 +167,60 @@ export default function Navbar() {
                                     <ShoppingBagIcon />
                                 </Badge>
                             </IconButton>
-                            <Menu
-                                id="menu-shoppingBag"
-                                anchorEl={anchorElCart}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElCart)}
-                                onClose={handleCloseCartMenu}
-                                sx={{ display: "flex" }}
-                            >
-                                {pages.map((page) => (
-                                    <MenuItem key={page.name} onClick={handleCloseCartMenu}>
-                                        <Typography
-                                            component={Link}
-                                            to={page.path}
-                                            sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}
-                                        >
-                                            {page.name}
+                            <Drawer anchor="right" open={isDrawerOpen} onClose={() => toggleDrawer(false)}>
+                                <Box
+                                    sx={{
+                                        width: 300,
+                                        p: 2,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        height: "100%",
+                                        justifyContent: "space-between",
+                                    }}
+                                >
+                                    <Box>
+                                        <Typography variant="h6" gutterBottom>
+                                            Your Cart
                                         </Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
+                                        <Divider />
+                                        {cart.length > 0 ? (
+                                            cart.map((item) => (
+                                                <CartCard
+                                                    key={item.roomId}
+                                                    roomId={item.roomId}
+                                                    roomType={item.roomType}
+                                                    roomPhotoUrl={item.roomPhotoUrl}
+                                                    removeFromCart={() => removeFromCart(item.roomId)}
+                                                    price={item.price}
+                                                />
+                                            ))
+                                        ) : (
+                                            <Typography sx={{ textAlign: "center", mt: 2 }}>
+                                                Your cart is empty.
+                                            </Typography>
+                                        )}
+                                    </Box>
+
+                                    {cart.length > 0 && (
+                                        <Button
+                                            onClick={handleCheckout}
+                                            type="button"
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{
+                                                borderRadius: "30px",
+                                                padding: "10px 20px",
+                                                fontSize: "16px",
+                                                textTransform: "none",
+                                                width: "100%",
+                                                backgroundColor: "#174b71",
+                                            }}
+                                        >
+                                            Pay now
+                                        </Button>
+                                    )}
+                                </Box>
+                            </Drawer>
                         </Box>
                         <IconButton
                             size="large"

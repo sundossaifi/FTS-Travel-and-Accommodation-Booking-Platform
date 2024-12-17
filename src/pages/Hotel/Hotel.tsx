@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
     fetchHotelGallery,
@@ -29,6 +29,14 @@ export default function Hotel() {
     const [error, setError] = useState<string | null>(null);
 
     const { checkInDate, checkOutDate } = useSearch();
+
+    const roomsSectionRef = useRef<HTMLDivElement | null>(null);
+
+    function scrollToReviews() {
+        if (roomsSectionRef.current) {
+            roomsSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }
 
 
     useEffect(() => {
@@ -93,6 +101,7 @@ export default function Hotel() {
                             hotelLocation={hotelDetails.location}
                             starRating={hotelDetails.starRating}
                             reviewsCount={reviews.length}
+                            onReserveClick={scrollToReviews}
                         />
                     )}
                     <HotelGallery images={galleryImages} />
@@ -106,17 +115,21 @@ export default function Hotel() {
                     )}
 
                     {rooms.length > 0 && (
-                        <AvailableRooms rooms={rooms} />
+                        <div ref={roomsSectionRef}>
+                            <AvailableRooms rooms={rooms} />
+                        </div>
+
                     )}
 
                     {reviews.length > 0 && (
-                        <Box sx={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "flex-start",
-                            mt: "3rem",
-                        }}>
+                        <Box
+                            sx={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "flex-start",
+                                mt: "3rem",
+                            }}>
                             <Typography variant="h2" gutterBottom sx={{
                                 fontSize: "26px",
                                 fontWeight: "700",

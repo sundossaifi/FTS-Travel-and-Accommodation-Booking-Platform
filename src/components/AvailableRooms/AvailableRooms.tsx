@@ -31,8 +31,8 @@ export default function AvailableRooms({ rooms }: AvailableRoomsProps) {
                                 roomType={room.roomType}
                                 capacityOfAdults={room.capacityOfAdults}
                                 capacityOfChildren={room.capacityOfChildren}
-                                roomAmenities={room.roomAmenities}
                                 price={room.price}
+                                roomId={room.roomId}
                             />
                         </Grid2>
                     ))}
