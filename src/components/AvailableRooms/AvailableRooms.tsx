@@ -4,8 +4,9 @@ import AvailableRoomCard from "../AvailableRoomCard";
 
 interface AvailableRoomsProps {
     rooms: Room[];
+    hotelName:string;
 }
-export default function AvailableRooms({ rooms }: AvailableRoomsProps) {
+export default function AvailableRooms({ rooms,hotelName }: AvailableRoomsProps) {
     return (
             <Box sx={{
                 width: "100%",
@@ -27,12 +28,14 @@ export default function AvailableRooms({ rooms }: AvailableRoomsProps) {
                     {rooms.map((room) => (
                         <Grid2 key={room.roomId} size={{ xs: 12, sm: 6, md: 4 }}>
                             <AvailableRoomCard
+                                hotelName={hotelName}
                                 roomPhotoUrl={room.roomPhotoUrl}
                                 roomType={room.roomType}
                                 capacityOfAdults={room.capacityOfAdults}
                                 capacityOfChildren={room.capacityOfChildren}
                                 price={room.price}
                                 roomId={room.roomId}
+                                roomNumber={room.roomNumber}
                             />
                         </Grid2>
                     ))}

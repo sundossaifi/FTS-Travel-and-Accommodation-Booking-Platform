@@ -30,7 +30,7 @@ export default function CartCard({ roomId, roomType, price, roomPhotoUrl,removeF
                 />
                 <Box>
                     <Typography variant="body1">{roomType}</Typography>
-                    <Typography variant="body2">{`€${price}`}</Typography>
+                    <Typography variant="body2">{`$${price}`}</Typography>
                 </Box>
             </Box>
             <IconButton onClick={() => removeFromCart(roomId)} color="error">

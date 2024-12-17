@@ -1,12 +1,27 @@
-import React from 'react';
+import CheckoutForm from "../../components/CheckoutForm";
+import { Box, Typography } from "@mui/material";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import styles from "./Checkout.module.css"
 
-const Checkout: React.FC = () => {
+export default function Checkout() {
     return (
-        <div>
-            <h1>Checkout</h1>
-            <p>Complete your booking here.</p>
-        </div>
+        <Box>
+            <div>
+                <Navbar />
+                <div className={styles.headerContainer}>
+                    <Typography variant="h4" sx={{
+                        position: "absolute",
+                        bottom: "10%",
+                        left: "10%",
+                        color: "#fff"
+                    }}>
+                        Checkout
+                    </Typography>
+                </div>
+            </div>
+            <CheckoutForm />
+            <Footer/>
+        </Box>
     );
-};
-
-export default Checkout;
+}

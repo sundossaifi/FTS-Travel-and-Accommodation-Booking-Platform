@@ -13,15 +13,17 @@ import { useCart } from "../../context/CartContext";
 
 interface AvailableRoomCardProps {
     roomId: number;
+    roomNumber: number;
     roomPhotoUrl: string;
     roomType: string;
     capacityOfAdults: number;
     capacityOfChildren: number;
     price: number;
+    hotelName: string;
 }
 
 export default function AvailableRoomCard({
-    roomId, roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, price
+    roomId, roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, price, roomNumber,hotelName
 }: AvailableRoomCardProps) {
     const { addToCart } = useCart();
 
@@ -31,6 +33,8 @@ export default function AvailableRoomCard({
             roomType,
             price,
             roomPhotoUrl,
+            roomNumber: roomNumber.toString(),
+            hotelName
         });
     }
 

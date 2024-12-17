@@ -114,9 +114,9 @@ export default function Hotel() {
                         />
                     )}
 
-                    {rooms.length > 0 && (
+                    {rooms.length > 0 && hotelDetails && (
                         <div ref={roomsSectionRef}>
-                            <AvailableRooms rooms={rooms} />
+                            <AvailableRooms rooms={rooms} hotelName={hotelDetails.hotelName} />
                         </div>
 
                     )}

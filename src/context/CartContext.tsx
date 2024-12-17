@@ -5,6 +5,8 @@ interface CartItem {
     roomType: string;
     price: number;
     roomPhotoUrl: string;
+    roomNumber: string
+    hotelName:string
 }
 
 interface CartContextProps {

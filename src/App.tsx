@@ -6,6 +6,7 @@ import Checkout from './pages/Checkout/Checkout';
 import NotFound from './pages/NotFound/NotFound';
 import { SearchProvider } from "./context/SearchContext";
 import { CartProvider } from './context/CartContext';
+import Confirmation from './pages/Confirmation/Confirmation';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/checkout',
     element: <Checkout />,
+  },
+  {
+    path: "/confirmation/:bookingId",
+    element: <Confirmation />
   },
   {
     path: '*',
