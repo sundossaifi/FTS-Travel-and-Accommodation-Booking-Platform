@@ -18,3 +18,15 @@ export function decodeToken(token: string): DecodedToken | null {
         return null;
     }
 }
+
+
+export function isTokenExpired(token: string): boolean {
+    try {
+        const decoded = jwtDecode<DecodedToken>(token);
+        const currentTime = Math.floor(Date.now() / 1000); 
+        return decoded.exp < currentTime; 
+    } catch (error) {
+        console.error("Failed to decode token:", error);
+        return true; 
+    }
+}

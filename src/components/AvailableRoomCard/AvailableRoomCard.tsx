@@ -6,10 +6,12 @@ import {
     CardContent,
     Divider,
     Button,
+    Snackbar,
 } from "@mui/material";
 import ChildCareIcon from '@mui/icons-material/ChildCare';
 import Person2Icon from '@mui/icons-material/Person2';
 import { useCart } from "../../context/CartContext";
+import { useState } from "react";
 
 interface AvailableRoomCardProps {
     roomId: number;
@@ -23,11 +25,19 @@ interface AvailableRoomCardProps {
 }
 
 export default function AvailableRoomCard({
-    roomId, roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, price, roomNumber,hotelName
+    roomId, roomPhotoUrl, roomType, capacityOfAdults, capacityOfChildren, price, roomNumber, hotelName
 }: AvailableRoomCardProps) {
-    const { addToCart } = useCart();
+    const { cart, addToCart } = useCart();
+    const [snackbarOpen, setSnackbarOpen] = useState(false); 
 
     function handleAddToCart() {
+        const roomAlreadyInCart = cart.some((item) => item.roomId === roomId.toString());
+
+        if (roomAlreadyInCart) {
+            setSnackbarOpen(true);
+            return;
+        }
+
         addToCart({
             roomId: roomId.toString(),
             roomType,
@@ -36,6 +46,10 @@ export default function AvailableRoomCard({
             roomNumber: roomNumber.toString(),
             hotelName
         });
+    }
+
+    function handleSnackbarClose() {
+        setSnackbarOpen(false);
     }
 
     return (
@@ -122,6 +136,13 @@ export default function AvailableRoomCard({
                     </Button>
                 </Box>
             </CardContent>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+                message="The room is already added to the cart."
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            />
         </Card>
     )
 }

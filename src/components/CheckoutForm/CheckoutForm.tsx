@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { createBooking } from "../../services/bookingService";
 import { Box, Typography, TextField, Button, Select, MenuItem, FormHelperText, Paper } from "@mui/material";
 import CartCard from "../CartCard";
+import { isTokenExpired } from "../../utils/authUtils";
 
 export default function CheckoutForm() {
     const { cart, clearCart, removeFromCart } = useCart();
@@ -22,6 +23,14 @@ export default function CheckoutForm() {
             paymentMethod: Yup.string().required("Payment method is required"),
         }),
         onSubmit: async (values) => {
+            const authToken = localStorage.getItem("authToken");
+
+            if (!authToken || isTokenExpired(authToken)) {
+                alert("Your session has expired. Please log in again.");
+                navigate("/");
+                return; 
+            }
+
             try {
                 const bookingPromises = cart.map((item) =>
                     createBooking({
@@ -36,12 +45,10 @@ export default function CheckoutForm() {
                 );
 
                 const bookingResponses = await Promise.all(bookingPromises);
-                console.log(bookingResponses)
-
                 const firstConfirmationNumber = bookingResponses[0]?.confirmationNumber;
 
                 if (firstConfirmationNumber) {
-                    clearCart(); 
+                    clearCart();
                     navigate(`/confirmation/${firstConfirmationNumber}`);
                 } else {
                     console.error("No confirmation number found in the response.");
