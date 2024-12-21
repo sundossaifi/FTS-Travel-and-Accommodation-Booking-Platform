@@ -60,3 +60,14 @@ export interface GalleryImage {
     id: number;
     url: string;
 }
+
+interface RecentHotel {
+    hotelId: number;
+    hotelName: string;
+    starRating: number;
+    visitDate: string;
+    cityName: string;
+    thumbnailUrl: string;
+    priceLowerBound: number;
+    priceUpperBound: number;
+}

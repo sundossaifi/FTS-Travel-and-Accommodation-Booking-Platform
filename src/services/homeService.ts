@@ -1,6 +1,8 @@
 import { BASE_URL } from "./config";
 import { Hotel, FeaturedDeal, } from "../types/hotel";
 import { TrendingDestination } from "../types/destination";
+import { RecentHotel } from "../types/hotel";
+
 // Function to search hotels
 export async function searchHotels({
     checkInDate,
@@ -71,6 +73,34 @@ export async function getTrendingDestinations(): Promise<TrendingDestination[]> 
         return await response.json();
     } catch (error) {
         console.error("Failed to fetch trending destinations:", error);
+        throw error;
+    }
+}
+
+//Function to get recent hotels
+export async function getRecentHotels(userId: number): Promise<RecentHotel[]> {
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/home/users/${userId}/recent-hotels`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Accept": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to fetch recent hotels:", error);
         throw error;
     }
 }
