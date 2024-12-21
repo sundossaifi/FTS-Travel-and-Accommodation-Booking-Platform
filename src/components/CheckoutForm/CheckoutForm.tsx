@@ -1,10 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { createBooking } from "../../services/bookingService";
-import { Box, Typography, TextField, Button, Select, MenuItem, FormHelperText, Paper, Divider } from "@mui/material";
+import { Box, Typography, TextField, Button, Select, MenuItem, FormHelperText, Paper } from "@mui/material";
 import CartCard from "../CartCard";
 
 export default function CheckoutForm() {
@@ -37,9 +36,16 @@ export default function CheckoutForm() {
                 );
 
                 const bookingResponses = await Promise.all(bookingPromises);
-                clearCart();
-                const firstBookingId = bookingResponses[0]?.bookingId;
-                navigate(`/confirmation/${firstBookingId}`);
+                console.log(bookingResponses)
+
+                const firstConfirmationNumber = bookingResponses[0]?.confirmationNumber;
+
+                if (firstConfirmationNumber) {
+                    clearCart(); 
+                    navigate(`/confirmation/${firstConfirmationNumber}`);
+                } else {
+                    console.error("No confirmation number found in the response.");
+                }
             } catch (error) {
                 if (error instanceof Error) {
                     console.error("Error confirming booking:", error.message);

@@ -1,14 +1,19 @@
 import { BASE_URL } from "./config";
-import { BookingDetails,BookingRequest,BookingResponse } from "../types/booking";
+import { BookingDetails, BookingRequest, } from "../types/booking";
 
-export async function createBooking(bookingData: BookingRequest): Promise<BookingResponse> {
+export async function createBooking(bookingData: BookingRequest): Promise<BookingDetails> {
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
     const response = await fetch(`${BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json-patch+json",
             "Accept": "*/*",
-
-            // "Authorization": `Bearer `,
+            "Authorization": `Bearer ${authToken}`,
         },
         body: JSON.stringify(bookingData),
     });
@@ -21,11 +26,17 @@ export async function createBooking(bookingData: BookingRequest): Promise<Bookin
 }
 
 export async function getBookingById(bookingId: number): Promise<BookingDetails> {
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
     const response = await fetch(`${BASE_URL}/api/bookings/${bookingId}`, {
         method: "GET",
         headers: {
             "Accept": "text/plain",
-            "Authorization": `Bearer ${localStorage.getItem("accessToken") || ""}`,
+            "Authorization": `Bearer ${authToken}`,
         },
     });
 

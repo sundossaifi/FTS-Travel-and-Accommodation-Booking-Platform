@@ -12,6 +12,11 @@ import {
     Badge,
     Divider,
     Drawer,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
 } from '@mui/material';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -27,10 +32,12 @@ export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const { cart, removeFromCart } = useCart();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); 
+
     const navigate = useNavigate();
 
     const pages = [
-        { name: 'Home', path: '/' },
+        { name: 'Home', path: '/Home' },
         { name: 'Search', path: '/search-results' },
     ]
 
@@ -51,6 +58,16 @@ export default function Navbar() {
         setDrawerOpen(open);
     }
 
+    function handleLogoutConfirm() {
+        localStorage.removeItem('authToken'); 
+        setLogoutDialogOpen(false); 
+        navigate('/'); 
+    }
+
+    function handleLogoutCancel() {
+        setLogoutDialogOpen(false);
+    }
+
     return (
         <AppBar position="absolute" sx={{
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -66,7 +83,7 @@ export default function Navbar() {
                                 variant="h6"
                                 noWrap
                                 component={Link}
-                                to="/"
+                                to="/Home"
                                 sx={{
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
@@ -122,7 +139,7 @@ export default function Navbar() {
                             variant="h5"
                             noWrap
                             component={Link}
-                            to="/"
+                            to="/Home"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'flex', md: 'none' },
@@ -225,12 +242,34 @@ export default function Navbar() {
                         <IconButton
                             size="large"
                             color="inherit"
+                            onClick={() => setLogoutDialogOpen(true)}
                         >
                             <LogoutIcon />
                         </IconButton>
                     </Box>
                 </Toolbar>
             </Container>
+            <Dialog
+                open={logoutDialogOpen}
+                onClose={handleLogoutCancel}
+                aria-labelledby="logout-dialog-title"
+                aria-describedby="logout-dialog-description"
+            >
+                <DialogTitle id="logout-dialog-title">{"Logout Confirmation"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="logout-dialog-description">
+                        Are you sure you want to log out?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleLogoutCancel} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleLogoutConfirm} color="error" autoFocus>
+                        Logout
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </AppBar>
     );
 }

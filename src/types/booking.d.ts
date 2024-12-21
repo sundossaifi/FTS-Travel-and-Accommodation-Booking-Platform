@@ -8,9 +8,6 @@ export interface BookingRequest {
     paymentMethod: string;
 }
 
-export interface BookingResponse {
-    bookingId: number;
-}
 
 export interface BookingDetails {
     customerName: string;

@@ -9,7 +9,6 @@ import {
 import { GalleryImage, HotelDetails, Review } from "../../types/hotel";
 import { Room } from "../../types/room";
 import HotelGallery from "../../components/HotelGallery";
-import Navbar from "../../components/Navbar";
 import HotelInfo from "../../components/HotelInfo";
 import HotelDetailsComponent from "../../components/HotelDetailsComponent";
 import AvailableRooms from "../../components/AvailableRooms";
@@ -18,6 +17,7 @@ import Footer from "../../components/Footer";
 import { useSearch } from "../../context/SearchContext";
 import styles from "./Hotel.module.css";
 import { Box, Typography } from "@mui/material";
+import DetailsHeader from "../../components/DetailsHeader/DetailsHeader";
 
 export default function Hotel() {
     const { id } = useParams<{ id: string }>();
@@ -81,19 +81,9 @@ export default function Hotel() {
 
     return (
         <div className={styles.hotelPageContainer}>
-            <div>
-                <Navbar />
-                <div className={styles.headerContainer}>
-                    <Typography variant="h4" sx={{
-                        position: "absolute",
-                        bottom: "10%",
-                        left: "10%",
-                        color: "#fff"
-                    }}>
-                        {hotelDetails?.hotelName}
-                    </Typography>
-                </div>
-            </div>
+            {hotelDetails && (
+                <DetailsHeader title={hotelDetails?.hotelName} />
+            )}
             <div className={styles.hotelDetailsContainer}>
                 <div style={{ width: "80%" }}>
                     {hotelDetails && (

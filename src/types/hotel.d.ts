@@ -31,7 +31,6 @@ export interface FeaturedDeal {
     roomPhotoUrl: string;
 }
 
-// Types
 export interface HotelDetails {
     hotelName: string;
     location: string;

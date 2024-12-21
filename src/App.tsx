@@ -7,11 +7,30 @@ import NotFound from './pages/NotFound/NotFound';
 import { SearchProvider } from "./context/SearchContext";
 import { CartProvider } from './context/CartContext';
 import Confirmation from './pages/Confirmation/Confirmation';
+import Admin from './pages/Admin/Admin';
+import Login from './pages/Login/Login';
+import PrivateRoute from './components/PrivateRoute';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Home />,
+    path: "/",
+    element: <Login />,
+  },
+  {
+    path: "/home",
+    element: (
+      <PrivateRoute>
+        <Home />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <PrivateRoute>
+        <Admin />
+      </PrivateRoute>
+    ),
   },
   {
     path: '/search-results',
