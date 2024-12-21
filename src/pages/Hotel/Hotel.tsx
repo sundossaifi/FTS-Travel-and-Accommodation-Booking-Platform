@@ -16,8 +16,10 @@ import ReviewCard from "../../components/ReviewCard";
 import Footer from "../../components/Footer";
 import { useSearch } from "../../context/SearchContext";
 import styles from "./Hotel.module.css";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import DetailsHeader from "../../components/DetailsHeader/DetailsHeader";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function Hotel() {
     const { id } = useParams<{ id: string }>();
@@ -27,10 +29,12 @@ export default function Hotel() {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [rooms, setRooms] = useState<Room[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [showAllReviews, setShowAllReviews] = useState(false);
 
     const { checkInDate, checkOutDate } = useSearch();
 
     const roomsSectionRef = useRef<HTMLDivElement | null>(null);
+    const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 3);
 
     function scrollToReviews() {
         if (roomsSectionRef.current) {
@@ -128,7 +132,7 @@ export default function Hotel() {
                             }}>
                                 Reviews
                             </Typography>
-                            {reviews.map((review) => (
+                            {displayedReviews.map((review) => (
                                 <ReviewCard
                                     key={review.reviewId}
                                     customerName={review.customerName}
@@ -136,6 +140,24 @@ export default function Hotel() {
                                     description={review.description}
                                 />
                             ))}
+                            {reviews.length > 3 && (
+                                <Button
+                                    onClick={() => setShowAllReviews(!showAllReviews)}
+                                    variant="text"
+                                    sx={{
+                                        width: "fit-content",
+                                        mt: 2,
+                                        textTransform: "none",
+                                        color: "#000",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    {showAllReviews ? <ExpandLessIcon sx={{ mr: 1 }} /> : <ExpandMoreIcon sx={{ mr: 1 }} />}
+                                    {showAllReviews ? "Show Less" : "Show More"}
+                                </Button>
+                            )}
                         </Box>
                     )}
                 </div>

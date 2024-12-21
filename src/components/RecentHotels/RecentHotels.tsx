@@ -26,7 +26,6 @@ export default function RecentHotels() {
 
                 const hotels = await getRecentHotels(parseInt(decodedToken.user_id));
                 setRecentHotels(hotels);
-                console.log(recentHotels);
             } catch (err) {
                 setError((err as Error).message || "An unknown error occurred.");
             } finally {
