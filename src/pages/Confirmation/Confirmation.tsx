@@ -2,10 +2,12 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getBookingById } from "../../services/bookingService";
 import { BookingDetails } from "../../types/booking";
+import Footer from "../../components/Footer";
+import DetailsHeader from "../../components/DetailsHeader/DetailsHeader";
+import ConfirmationCard from "../../components/ConfirmationCard";
 import {
     Typography,
     CircularProgress,
-    Paper,
     Box,
 } from "@mui/material";
 
@@ -72,48 +74,10 @@ export default function Confirmation() {
     }
 
     return (
-        <Paper
-            sx={{
-                maxWidth: 600,
-                margin: "auto",
-                padding: 4,
-                mt: 4,
-            }}
-        >
-            <Typography variant="h4" align="center" gutterBottom>
-                Booking Confirmation
-            </Typography>
-            <Box mt={2}>
-                <Typography>
-                    <strong>Customer Name:</strong> {bookingDetails.customerName}
-                </Typography>
-                <Typography>
-                    <strong>Hotel Name:</strong> {bookingDetails.hotelName}
-                </Typography>
-                <Typography>
-                    <strong>Room Number:</strong> {bookingDetails.roomNumber}
-                </Typography>
-                <Typography>
-                    <strong>Room Type:</strong> {bookingDetails.roomType}
-                </Typography>
-                <Typography>
-                    <strong>Booking Date:</strong>{" "}
-                    {new Date(bookingDetails.bookingDateTime).toLocaleString()}
-                </Typography>
-                <Typography>
-                    <strong>Total Cost:</strong> ${bookingDetails.totalCost}
-                </Typography>
-                <Typography>
-                    <strong>Payment Method:</strong> {bookingDetails.paymentMethod}
-                </Typography>
-                <Typography>
-                    <strong>Booking Status:</strong> {bookingDetails.bookingStatus}
-                </Typography>
-                <Typography>
-                    <strong>Confirmation Number:</strong>{" "}
-                    {bookingDetails.confirmationNumber}
-                </Typography>
-            </Box>
-        </Paper>
+        <Box>
+            <DetailsHeader title="Confirmation" />
+            <ConfirmationCard bookingDetails={bookingDetails} />
+            <Footer />
+        </Box>
     );
 }
