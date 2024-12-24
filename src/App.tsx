@@ -10,6 +10,9 @@ import Confirmation from './pages/Confirmation/Confirmation';
 import Admin from './pages/Admin/Admin';
 import Login from './pages/Login/Login';
 import PrivateRoute from './components/PrivateRoute';
+import ManageCities from './pages/Admin/ManageCities/ManageCities';
+import ManageHotels from './pages/Admin/ManageHotels/ManageHotels';
+import ManageRooms from './pages/Admin/ManageRooms/ManageRooms';
 
 const router = createBrowserRouter([
   {
@@ -25,12 +28,27 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin",
+    path: "/admin/*",
     element: (
       <PrivateRoute>
         <Admin />
       </PrivateRoute>
     ),
+    children: [
+
+      {
+        path: "manage-hotels",
+        element: <ManageHotels />,
+      },
+      {
+        path: "manage-cities",
+        element: <ManageCities />,
+      },
+      {
+        path: "manage-rooms",
+        element: <ManageRooms />,
+      },
+    ],
   },
   {
     path: '/search-results',

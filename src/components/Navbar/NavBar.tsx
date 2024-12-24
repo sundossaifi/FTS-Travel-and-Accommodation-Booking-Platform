@@ -12,11 +12,6 @@ import {
     Badge,
     Divider,
     Drawer,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
 } from '@mui/material';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -27,12 +22,13 @@ import { useCart } from '../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import CartCard from '../CartCard';
+import LogoutDialog from '../LogoutDialog';
 
 export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const { cart, removeFromCart } = useCart();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); 
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -59,9 +55,9 @@ export default function Navbar() {
     }
 
     function handleLogoutConfirm() {
-        localStorage.removeItem('authToken'); 
-        setLogoutDialogOpen(false); 
-        navigate('/'); 
+        localStorage.removeItem('authToken');
+        setLogoutDialogOpen(false);
+        navigate('/');
     }
 
     function handleLogoutCancel() {
@@ -249,27 +245,11 @@ export default function Navbar() {
                     </Box>
                 </Toolbar>
             </Container>
-            <Dialog
+            <LogoutDialog
                 open={logoutDialogOpen}
-                onClose={handleLogoutCancel}
-                aria-labelledby="logout-dialog-title"
-                aria-describedby="logout-dialog-description"
-            >
-                <DialogTitle id="logout-dialog-title">{"Logout Confirmation"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="logout-dialog-description">
-                        Are you sure you want to log out?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleLogoutCancel} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleLogoutConfirm} color="error" autoFocus>
-                        Logout
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                onConfirm={handleLogoutConfirm}
+                onCancel={handleLogoutCancel}
+            />
         </AppBar>
     );
 }
