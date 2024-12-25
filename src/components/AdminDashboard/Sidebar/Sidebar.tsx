@@ -197,8 +197,13 @@ export default function Sidebar() {
             <Box
                 component="main"
                 sx={{
-                    flexGrow: 1,
-                    padding: theme.spacing(3),
+                    width: `calc(100vw - ${open ? drawerWidth : 0}px)`,
+                    minHeight: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#f7f8fa",
                     transition: theme.transitions.create('margin', {
                         easing: theme.transitions.easing.sharp,
                         duration: theme.transitions.duration.leavingScreen,
