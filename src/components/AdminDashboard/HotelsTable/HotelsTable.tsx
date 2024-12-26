@@ -17,10 +17,12 @@ import {
     InputAdornment,
     Drawer,
     Button,
+    Tooltip
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { fetchHotels, Hotel, updateHotel } from "../../../services/adminService";
 import SearchIcon from "@mui/icons-material/Search";
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isTokenExpired } from "../../../utils/authUtils";
@@ -30,10 +32,12 @@ export default function HotelsTable() {
     const [hotels, setHotels] = useState<Hotel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [search, setSearch] = useState<string>("");
+    const [searchType, setSearchType] = useState<"name" | "description">("name");
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [anchorElFilter, setAnchorElFilter] = useState<null | HTMLElement>(null);
     const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
@@ -44,7 +48,16 @@ export default function HotelsTable() {
         async function loadHotels() {
             setLoading(true);
             try {
-                const data = await fetchHotels(undefined, search, rowsPerPage, page + 1);
+                if (!searchType) {
+                    console.log("Search Type is required")
+                }
+                
+                const data = await fetchHotels(
+                    searchType === "name" ? search.trim() : undefined,
+                    searchType === "description" ? search.trim() : undefined,
+                    rowsPerPage,
+                    page + 1
+                );
                 setHotels(data);
                 setHasMore(data.length === rowsPerPage);
                 setLoading(false);
@@ -54,7 +67,7 @@ export default function HotelsTable() {
             }
         }
         loadHotels();
-    }, [search, rowsPerPage, page]);
+    }, [search, rowsPerPage, page, searchType]);
 
     function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
         setSearch(event.target.value);
@@ -83,6 +96,13 @@ export default function HotelsTable() {
         setSelectedHotelId(null);
     }
 
+    function handleFilterMenuOpen(event: React.MouseEvent<HTMLElement>) {
+        setAnchorElFilter(event.currentTarget);
+    }
+    function handleFilterMenuClose() {
+        setAnchorElFilter(null);
+    }
+
     function handleEdit() {
         if (!selectedHotelId || !selectedHotel) {
             alert("Unable to edit. Please try again.");
@@ -90,6 +110,11 @@ export default function HotelsTable() {
         }
         setIsDrawerOpen(true);
         handleMenuClose();
+    }
+
+    function handleSearchType(searchType: "name" | "description") {
+        setSearchType(searchType);
+        handleFilterMenuClose();
     }
 
     const formik = useFormik({
@@ -143,7 +168,7 @@ export default function HotelsTable() {
 
     return (
         <Paper sx={{ mt: "20px", width: "100%", borderRadius: "16px" }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, p: "20px 0px 0px 20px" }}>
+            <Box sx={{ display: "flex", mb: 2, p: "20px 0px 0px 20px", gap: "5px", width: "100%" }}>
                 <TextField
                     variant="outlined"
                     placeholder="Search hotels..."
@@ -161,6 +186,19 @@ export default function HotelsTable() {
                         },
                     }}
                 />
+                <Tooltip title="Search by" placement="top">
+                    <IconButton onClick={(event) => handleFilterMenuOpen(event)}>
+                        <FilterListIcon />
+                    </IconButton>
+                </Tooltip>
+                <Menu
+                    anchorEl={anchorElFilter}
+                    open={Boolean(anchorElFilter)}
+                    onClose={handleFilterMenuClose}
+                >
+                    <MenuItem onClick={() => handleSearchType("name")}>Name</MenuItem>
+                    <MenuItem onClick={() => handleSearchType("description")}>Description</MenuItem>
+                </Menu>
             </Box>
             <TableContainer>
                 {loading ? (
@@ -316,7 +354,7 @@ export default function HotelsTable() {
                         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                             <Button
                                 onClick={() => setIsDrawerOpen(false)}
-                                sx={{ mr: 1,color:"#174b71" }}
+                                sx={{ mr: 1, color: "#174b71" }}
                             >
                                 Cancel
                             </Button>
