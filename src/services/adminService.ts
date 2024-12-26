@@ -40,3 +40,24 @@ export async function fetchHotels(name?: string, searchQuery?: string, pageSize:
         throw error;
     }
 }
+
+export async function updateHotel(hotelId: number, data: Partial<Hotel>): Promise<void> {
+    const url = `${BASE_URL}/api/hotels/${hotelId}`;
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json-patch+json",
+            "Authorization": `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        throw new Error("Failed to update hotel");
+    }
+}

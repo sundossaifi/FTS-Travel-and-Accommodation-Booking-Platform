@@ -9,18 +9,22 @@ import {
     TablePagination,
     Paper,
     TextField,
-    Avatar,
-    Typography,
     Box,
     IconButton,
     Menu,
     MenuItem,
     CircularProgress,
     InputAdornment,
+    Drawer,
+    Button,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchHotels, Hotel } from "../../../services/adminService";
+import { fetchHotels, Hotel, updateHotel } from "../../../services/adminService";
 import SearchIcon from "@mui/icons-material/Search";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { isTokenExpired } from "../../../utils/authUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function HotelsTable() {
     const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -31,6 +35,10 @@ export default function HotelsTable() {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function loadHotels() {
@@ -65,6 +73,8 @@ export default function HotelsTable() {
 
     function handleMenuOpen(event: React.MouseEvent<HTMLElement>, hotelId: number) {
         setAnchorEl(event.currentTarget);
+        const hotel = hotels.find((h) => h.id === hotelId);
+        setSelectedHotel(hotel || null);
         setSelectedHotelId(hotelId);
     }
 
@@ -74,18 +84,66 @@ export default function HotelsTable() {
     }
 
     function handleEdit() {
-        console.log(`Edit hotel with ID: ${selectedHotelId}`);
+        if (!selectedHotelId || !selectedHotel) {
+            alert("Unable to edit. Please try again.");
+            return;
+        }
+        setIsDrawerOpen(true);
         handleMenuClose();
     }
 
-    function handleDelete() {
-        console.log(`Delete hotel with ID: ${selectedHotelId}`);
-        handleMenuClose();
-    }
+    const formik = useFormik({
+        initialValues: {
+            name: selectedHotel?.name || "",
+            description: selectedHotel?.description || "",
+            hotelType: selectedHotel?.hotelType || 0,
+            starRating: selectedHotel?.starRating || 0,
+            latitude: selectedHotel?.latitude || 0,
+            longitude: selectedHotel?.longitude || 0,
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            name: Yup.string().required("Name is required"),
+            description: Yup.string().required("Description is required"),
+            hotelType: Yup.number().required("Hotel type is required"),
+            starRating: Yup.number().min(0).max(5).required("Star rating is required"),
+            latitude: Yup.number().required("Latitude is required"),
+            longitude: Yup.number().required("Longitude is required"),
+        }),
+        onSubmit: async (values) => {
+            const authToken = localStorage.getItem("authToken");
+
+            if (!authToken || isTokenExpired(authToken)) {
+                alert("Your session has expired. Please log in again.");
+                navigate("/");
+                return;
+            }
+
+            const hotelId = selectedHotel?.id;
+
+            if (!hotelId) {
+                alert("Unable to update the hotel. Please try again.");
+                return;
+            }
+
+            try {
+                await updateHotel(hotelId, values);
+                setHotels((prev) =>
+                    prev.map((hotel) =>
+                        hotel.id === hotelId ? { ...hotel, ...values } : hotel
+                    )
+                );
+                setIsDrawerOpen(false);
+            } catch (error) {
+                console.error("Error saving data", error);
+                alert("Failed to save data. Please check your input and try again.");
+            }
+        },
+    });
 
     return (
-        <Paper sx={{ mt: "20px", padding: "20px", width: "100%", borderRadius: "16px" }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+        <Paper sx={{ mt: "20px", width: "100%", borderRadius: "16px" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, p: "20px 0px 0px 20px" }}>
                 <TextField
                     variant="outlined"
                     placeholder="Search hotels..."
@@ -119,7 +177,7 @@ export default function HotelsTable() {
                 ) : (
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ bgcolor: "lightgray" }}>
                                 <TableCell>Name</TableCell>
                                 <TableCell>Description</TableCell>
                                 <TableCell>Hotel Type</TableCell>
@@ -173,10 +231,107 @@ export default function HotelsTable() {
                 onClose={handleMenuClose}
             >
                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
-                    Delete
-                </MenuItem>
             </Menu>
+
+            <Drawer
+                anchor="right"
+                open={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+            >
+                <Box sx={{ width: 400, padding: 3 }}>
+                    <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            margin="normal"
+                            name="name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            margin="normal"
+                            name="description"
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                                formik.touched.description &&
+                                Boolean(formik.errors.description)
+                            }
+                            helperText={formik.touched.description && formik.errors.description}
+                        />
+                        <TextField
+                            label="Hotel Type"
+                            fullWidth
+                            margin="normal"
+                            name="hotelType"
+                            type="number"
+                            value={formik.values.hotelType}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.hotelType && Boolean(formik.errors.hotelType)}
+                            helperText={formik.touched.hotelType && formik.errors.hotelType}
+                        />
+                        <TextField
+                            label="Star Rating"
+                            fullWidth
+                            margin="normal"
+                            name="starRating"
+                            type="number"
+                            value={formik.values.starRating}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.starRating && Boolean(formik.errors.starRating)}
+                            helperText={formik.touched.starRating && formik.errors.starRating}
+                        />
+                        <TextField
+                            label="Latitude"
+                            fullWidth
+                            margin="normal"
+                            name="latitude"
+                            type="number"
+                            value={formik.values.latitude}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.latitude && Boolean(formik.errors.latitude)}
+                            helperText={formik.touched.latitude && formik.errors.latitude}
+                        />
+                        <TextField
+                            label="Longitude"
+                            fullWidth
+                            margin="normal"
+                            name="longitude"
+                            type="number"
+                            value={formik.values.longitude}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.longitude && Boolean(formik.errors.longitude)}
+                            helperText={formik.touched.longitude && formik.errors.longitude}
+                        />
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                            <Button
+                                onClick={() => setIsDrawerOpen(false)}
+                                sx={{ mr: 1,color:"#174b71" }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    backgroundColor: "#174b71",
+                                }}>
+                                Save
+                            </Button>
+                        </Box>
+                    </form>
+                </Box>
+            </Drawer>
         </Paper>
-    );
+    )
 }
