@@ -1,14 +1,5 @@
 import { BASE_URL } from "./config";
-
-export interface Hotel {
-    id: number;
-    name: string;
-    description: string;
-    hotelType: number;
-    starRating: number;
-    latitude: number;
-    longitude: number;
-}
+import { Hotel, City } from "../types/admin";
 
 export async function fetchHotels(name?: string, searchQuery?: string, pageSize: number = 10, pageNumber: number = 1): Promise<Hotel[]> {
     const params = new URLSearchParams();
@@ -59,5 +50,95 @@ export async function updateHotel(hotelId: number, data: Partial<Hotel>): Promis
     });
     if (!response.ok) {
         throw new Error("Failed to update hotel");
+    }
+}
+
+export async function fetchCities(): Promise<City[]> {
+    const url = `${BASE_URL}/api/cities`;
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch cities: ${response.statusText}`);
+        }
+
+        const data: City[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function addHotelToCity(cityId: number, hotelData: Omit<Hotel, "id">): Promise<void> {
+    const url = `${BASE_URL}/api/cities/${cityId}/hotels`;
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json-patch+json",
+            Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(hotelData),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to add hotel");
+    }
+}
+
+export async function fetchHotelsByCity(cityId: number): Promise<Hotel[]> {
+    const url = `${BASE_URL}/api/cities/${cityId}/hotels`;
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch hotels for city ${cityId}: ${response.statusText}`);
+        }
+
+        const data: Hotel[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function deleteHotel(cityId: number, hotelId: number): Promise<void> {
+    const url = `${BASE_URL}/api/cities/${cityId}/hotels/${hotelId}`;
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
+    const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete hotel");
     }
 }

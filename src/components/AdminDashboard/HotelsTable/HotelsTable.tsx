@@ -20,7 +20,8 @@ import {
     Tooltip
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchHotels, Hotel, updateHotel } from "../../../services/adminService";
+import { deleteHotel, fetchCities, fetchHotels, fetchHotelsByCity, updateHotel } from "../../../services/adminService";
+import { Hotel } from "../../../types/admin";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useFormik } from "formik";
@@ -38,20 +39,15 @@ export default function HotelsTable() {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [anchorElFilter, setAnchorElFilter] = useState<null | HTMLElement>(null);
-    const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
-
+    const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         async function loadHotels() {
             setLoading(true);
             try {
-                if (!searchType) {
-                    console.log("Search Type is required")
-                }
-                
                 const data = await fetchHotels(
                     searchType === "name" ? search.trim() : undefined,
                     searchType === "description" ? search.trim() : undefined,
@@ -60,14 +56,29 @@ export default function HotelsTable() {
                 );
                 setHotels(data);
                 setHasMore(data.length === rowsPerPage);
-                setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch hotels", error);
+            } finally {
                 setLoading(false);
             }
         }
+
         loadHotels();
     }, [search, rowsPerPage, page, searchType]);
+
+    useEffect(() => {
+        async function loadCities() {
+            try {
+                const cityData = await fetchCities();
+                setCities(cityData);
+            } catch (error) {
+                console.error("Failed to fetch cities", error);
+            }
+        }
+
+        loadCities();
+    }, []);
+
 
     function handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
         setSearch(event.target.value);
@@ -88,12 +99,10 @@ export default function HotelsTable() {
         setAnchorEl(event.currentTarget);
         const hotel = hotels.find((h) => h.id === hotelId);
         setSelectedHotel(hotel || null);
-        setSelectedHotelId(hotelId);
     }
 
     function handleMenuClose() {
         setAnchorEl(null);
-        setSelectedHotelId(null);
     }
 
     function handleFilterMenuOpen(event: React.MouseEvent<HTMLElement>) {
@@ -104,12 +113,43 @@ export default function HotelsTable() {
     }
 
     function handleEdit() {
-        if (!selectedHotelId || !selectedHotel) {
+        if (!selectedHotel?.id || !selectedHotel) {
             alert("Unable to edit. Please try again.");
             return;
         }
         setIsDrawerOpen(true);
         handleMenuClose();
+    }
+
+    async function handleDelete() {
+        if (!selectedHotel) {
+            alert("No hotel selected for deletion.");
+            return;
+        }
+
+        try {
+            const filteredCities = cities.filter(city => ![5, 7, 8].includes(city.id));
+            const city = await Promise.all(
+                filteredCities.map(async (city) => {
+                    const cityHotels = await fetchHotelsByCity(city.id);
+                    return cityHotels.find((hotel) => hotel.id === selectedHotel.id) ? city : null;
+                })
+            );
+
+            const matchedCity = city.find((c) => c !== null);
+
+            if (!matchedCity) {
+                alert("City information not found for the selected hotel.");
+                return;
+            }
+            await deleteHotel(matchedCity.id, selectedHotel.id);
+            alert("Hotel deleted successfully!");
+            setHotels((prevHotels) => prevHotels.filter((hotel) => hotel.id !== selectedHotel.id));
+            handleMenuClose();
+        } catch (error) {
+            console.error("Failed to delete hotel", error);
+            alert("Failed to delete hotel. Please try again.");
+        }
     }
 
     function handleSearchType(searchType: "name" | "description") {
@@ -269,6 +309,7 @@ export default function HotelsTable() {
                 onClose={handleMenuClose}
             >
                 <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
             </Menu>
 
             <Drawer
