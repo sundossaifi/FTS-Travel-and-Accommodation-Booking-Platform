@@ -1,32 +1,15 @@
-import { Box, Typography, Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import { Box } from "@mui/material";
+import ContentHeader from "../../../components/AdminDashboard/ContentHeader";
+import RoomsTable from "../../../components/AdminDashboard/RoomsTable";
 
 export default function ManageRooms() {
     return (
-        <div>
-            <Box sx={{
-                display: "flex",
-                justifyContent: "space-between"
-            }}>
-                <Typography variant="h5">
-                    Manage Rooms
-                </Typography>
-                <Button
-                    startIcon={<AddIcon />}
-                    type="button"
-                    variant="contained"
-                    color="primary"
-                    // onClick={applyFilters}
-                    sx={{
-                        borderRadius: "10px",
-                        padding: "5px 15px",
-                        fontSize: "16px",
-                        textTransform: "none",
-                        backgroundColor: "#174b71",
-                    }}>
-                        Add room
-                </Button>
-            </Box>
-        </div>
+        <Box sx={{ height: "100%", width: "90%", margin: "10px 0px" }}>
+            <ContentHeader
+                title="Manage Rooms"
+                actionTitle="Add Room"
+            />
+            <RoomsTable />
+        </Box>
     )
 }

@@ -1,7 +1,13 @@
 import { BASE_URL } from "./config";
 import { Hotel, City } from "../types/admin";
+import { Room } from "../types/room";
 
-export async function fetchHotels(name?: string, searchQuery?: string, pageSize: number = 10, pageNumber: number = 1): Promise<Hotel[]> {
+export async function fetchHotels(
+    name?: string,
+    searchQuery?: string,
+    pageSize: number = 10,
+    pageNumber: number = 1
+): Promise<Hotel[]> {
     const params = new URLSearchParams();
 
     if (name) params.append("name", name);
@@ -140,5 +146,34 @@ export async function deleteHotel(cityId: number, hotelId: number): Promise<void
 
     if (!response.ok) {
         throw new Error("Failed to delete hotel");
+    }
+}
+
+export async function fetchRooms(
+    hotelId: number,
+    checkInDate: string = "2025-1-15",
+    checkOutDate: string = "2025-1-16"
+): Promise<Room[]> {
+    const url = `${BASE_URL}/api/hotels/${hotelId}/rooms?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch rooms: ${response.status} ${response.statusText}`
+            );
+        }
+
+        const data: Room[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching rooms:", error);
+        throw error;
     }
 }

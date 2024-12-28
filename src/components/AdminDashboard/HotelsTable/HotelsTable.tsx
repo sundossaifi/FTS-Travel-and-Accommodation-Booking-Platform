@@ -19,11 +19,11 @@ import {
     Button,
     Tooltip
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { deleteHotel, fetchCities, fetchHotels, fetchHotelsByCity, updateHotel } from "../../../services/adminService";
 import { Hotel } from "../../../types/admin";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from '@mui/icons-material/FilterList';
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { isTokenExpired } from "../../../utils/authUtils";

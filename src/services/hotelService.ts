@@ -2,7 +2,6 @@ import { Room } from "../types/room";
 import { BASE_URL } from "./config";
 import { HotelDetails, Review, GalleryImage } from "../types/hotel";
 
-
 //Fetch available rooms for a hotel
 export async function fetchAvailableRooms(
     hotelId: string,
