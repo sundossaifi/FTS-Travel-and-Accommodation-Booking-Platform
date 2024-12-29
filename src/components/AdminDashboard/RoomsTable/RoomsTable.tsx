@@ -20,39 +20,41 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchCities, fetchRooms } from "../../../services/adminService";
-import { City } from "../../../types/admin";
+import { fetchHotels, fetchRooms } from "../../../services/adminService";
+import { Hotel } from "../../../types/admin";
 import { Room } from "../../../types/room";
 
-export default function RoomsTable() {
+export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId: number | null) => void }) {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [cities, setCities] = useState<City[]>([]);
+    const [hotels, setHotels] = useState<Hotel[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [selectedCity, setSelectedCity] = useState<number | null>(1);
+    const [selectedHotel, setSelectedHotel] = useState<number | null>(null);
     const [search, setSearch] = useState<string>("");
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
 
     useEffect(() => {
-        async function loadCities() {
+        async function loadHotels() {
             try {
-                const cityData = await fetchCities();
-                setCities(cityData);
+                const hotelData = await fetchHotels();
+                setHotels(hotelData);
+                const defaultHotelId = hotelData[0]?.id || null;
+                setSelectedHotel(defaultHotelId);
+                onSelectHotel(defaultHotelId); 
             } catch (error) {
-                console.error("Failed to fetch cities:", error);
+                console.error("Failed to fetch hotels:", error);
             }
         }
-        loadCities();
-    }, []);
+        loadHotels();
+    }, [onSelectHotel]);
 
     useEffect(() => {
         async function loadRooms() {
-            if (!selectedCity) return;
+            if (!selectedHotel) return;
             setLoading(true);
             try {
-                const data = await fetchRooms(selectedCity);
+                const data = await fetchRooms(selectedHotel);
                 setRooms(data);
             } catch (error) {
                 console.error("Failed to fetch rooms:", error);
@@ -61,10 +63,12 @@ export default function RoomsTable() {
             }
         }
         loadRooms();
-    }, [selectedCity]);
+    }, [selectedHotel]);
 
-    function handleCityChange(event: SelectChangeEvent<number>) {
-        setSelectedCity(Number(event.target.value));
+    function handleHotelChange(event: SelectChangeEvent<number>) {
+        const hotelId = Number(event.target.value);
+        setSelectedHotel(hotelId);
+        onSelectHotel(hotelId); 
         setPage(0);
     }
 
@@ -86,7 +90,6 @@ export default function RoomsTable() {
         room.roomType.toLowerCase().includes(search.toLowerCase())
     );
 
-    // Apply pagination to the filtered rooms
     const paginatedRooms = filteredRooms.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
@@ -94,7 +97,6 @@ export default function RoomsTable() {
 
     function handleMenuOpen(event: React.MouseEvent<HTMLElement>, roomId: number) {
         setAnchorEl(event.currentTarget);
-        setSelectedRoomId(roomId || null);
     }
 
     function handleMenuClose() {
@@ -122,18 +124,18 @@ export default function RoomsTable() {
                     }}
                 />
                 <Select
-                    value={selectedCity || ""}
-                    onChange={handleCityChange}
+                    value={selectedHotel || ""}
+                    onChange={handleHotelChange}
                     displayEmpty
                     fullWidth
                     sx={{ maxWidth: 200 }}
                 >
                     <MenuItem value="" disabled>
-                        Select a City
+                        Select a Hotel
                     </MenuItem>
-                    {cities.map((city) => (
-                        <MenuItem key={city.id} value={city.id}>
-                            {city.name}
+                    {hotels.map((hotel) => (
+                        <MenuItem key={hotel.id} value={hotel.id}>
+                            {hotel.name}
                         </MenuItem>
                     ))}
                 </Select>
@@ -199,8 +201,8 @@ export default function RoomsTable() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem >Edit</MenuItem>
-                <MenuItem >Delete</MenuItem>
+                <MenuItem>Edit</MenuItem>
+                <MenuItem>Delete</MenuItem>
             </Menu>
         </Paper>
     );

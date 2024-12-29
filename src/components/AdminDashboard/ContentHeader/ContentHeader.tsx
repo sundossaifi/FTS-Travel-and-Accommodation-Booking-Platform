@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 interface ContentHeaderProps {
     title: string;
     actionTitle: string;
-    onActionClick?: () => void; // Optional callback for button click
+    onActionClick?: () => void; 
 }
 
 export default function ContentHeader({ title, actionTitle, onActionClick }: ContentHeaderProps) {
