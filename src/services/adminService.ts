@@ -234,3 +234,31 @@ export async function updateRoom(roomId: number, roomData: { roomNumber: string;
     }
 }
 
+export async function fetchCitiesList(
+    pageSize: number = 10,
+    pageNumber: number = 1
+): Promise<City[]> {
+    const url = `${BASE_URL}/api/cities?pageSize=${pageSize}&pageNumber=${pageNumber}`;
+
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch cities: ${response.statusText}`);
+        }
+
+        const data: City[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+

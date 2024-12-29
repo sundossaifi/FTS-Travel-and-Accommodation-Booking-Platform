@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Dialog,
     DialogActions,
@@ -22,7 +22,7 @@ interface AddHotelDialogProps {
     onClose: () => void;
 }
 
-const AddHotelDialog: React.FC<AddHotelDialogProps> = ({ open, onClose }) => {
+export default function AddHotelDialog({ open, onClose }: AddHotelDialogProps) {
     const [cities, setCities] = useState<City[]>([]);
     const [loadingCities, setLoadingCities] = useState(true);
     const navigate = useNavigate();
@@ -207,7 +207,5 @@ const AddHotelDialog: React.FC<AddHotelDialogProps> = ({ open, onClose }) => {
                 )}
             </DialogContent>
         </Dialog>
-    );
-};
-
-export default AddHotelDialog;
+    )
+}
