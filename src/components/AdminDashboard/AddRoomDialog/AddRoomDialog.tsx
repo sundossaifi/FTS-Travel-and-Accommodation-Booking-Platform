@@ -40,6 +40,7 @@ export default function AddRoomDialog({ open, onClose, hotelId }: AddRoomDialogP
                 navigate("/");
                 return;
             }
+            
             try {
                 await addRoomToHotel(hotelId, {
                     roomNumber: values.roomNumber,

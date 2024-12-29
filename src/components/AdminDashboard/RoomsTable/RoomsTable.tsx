@@ -17,12 +17,18 @@ import {
     SelectChangeEvent,
     IconButton,
     Menu,
+    Drawer,
+    Button,
 } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchHotels, fetchRooms } from "../../../services/adminService";
+import { fetchHotels, fetchRooms, updateRoom } from "../../../services/adminService";
 import { Hotel } from "../../../types/admin";
 import { Room } from "../../../types/room";
+import { isTokenExpired } from "../../../utils/authUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId: number | null) => void }) {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -33,6 +39,9 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function loadHotels() {
@@ -41,7 +50,7 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
                 setHotels(hotelData);
                 const defaultHotelId = hotelData[0]?.id || null;
                 setSelectedHotel(defaultHotelId);
-                onSelectHotel(defaultHotelId); 
+                onSelectHotel(defaultHotelId);
             } catch (error) {
                 console.error("Failed to fetch hotels:", error);
             }
@@ -68,7 +77,7 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
     function handleHotelChange(event: SelectChangeEvent<number>) {
         const hotelId = Number(event.target.value);
         setSelectedHotel(hotelId);
-        onSelectHotel(hotelId); 
+        onSelectHotel(hotelId);
         setPage(0);
     }
 
@@ -95,13 +104,58 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
         page * rowsPerPage + rowsPerPage
     );
 
-    function handleMenuOpen(event: React.MouseEvent<HTMLElement>, roomId: number) {
+    function handleMenuOpen(event: React.MouseEvent<HTMLElement>, room: Room) {
         setAnchorEl(event.currentTarget);
+        setSelectedRoom(room);
     }
 
     function handleMenuClose() {
         setAnchorEl(null);
     }
+
+    const formik = useFormik({
+        initialValues: {
+            roomNumber: selectedRoom?.roomNumber || "",
+            cost: selectedRoom?.price || 0,
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            roomNumber: Yup.string().required("Room number is required"),
+            cost: Yup.number().min(1, "Cost must be greater than 0").required("Cost is required"),
+        }),
+        onSubmit: async (values) => {
+            const authToken = localStorage.getItem("authToken");
+
+            if (!authToken || isTokenExpired(authToken)) {
+                alert("Your session has expired. Please log in again.");
+                navigate("/");
+                return;
+            }
+            if (!selectedRoom) return;
+            try {
+                await updateRoom(selectedRoom.roomId, {
+                    roomNumber: String(values.roomNumber),
+                    cost: values.cost,
+                });
+                alert("Room updated successfully!");
+                setIsDrawerOpen(false);
+                setRooms((prevRooms) =>
+                    prevRooms.map((room) =>
+                        room.roomId === selectedRoom.roomId
+                            ? {
+                                ...room,
+                                roomNumber: Number(values.roomNumber),
+                                price: values.cost,
+                            } : room
+                    )
+                );
+
+            } catch (error) {
+                console.error("Failed to update room:", error);
+                alert("Failed to update the room. Please try again.");
+            }
+        },
+    });
 
     return (
         <Paper sx={{ mt: "20px", width: "100%", borderRadius: "16px" }}>
@@ -176,7 +230,7 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
                                     <TableCell>{room.availability ? "Available" : "Unavailable"}</TableCell>
                                     <TableCell>
                                         <IconButton
-                                            onClick={(event) => handleMenuOpen(event, room.roomId)}
+                                            onClick={(event) => handleMenuOpen(event, room)}
                                         >
                                             <MoreVertIcon />
                                         </IconButton>
@@ -201,9 +255,67 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
             >
-                <MenuItem>Edit</MenuItem>
-                <MenuItem>Delete</MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        setIsDrawerOpen(true);
+                        handleMenuClose();
+                    }}
+                >
+                    Edit
+                </MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        alert("Delete functionality not implemented");
+                        handleMenuClose();
+                    }}
+                >
+                    Delete
+                </MenuItem>
             </Menu>
+            <Drawer
+                anchor="right"
+                open={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+            >
+                <Box sx={{ width: 400, padding: 3 }}>
+                    <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                            label="Room Number"
+                            fullWidth
+                            margin="normal"
+                            name="roomNumber"
+                            value={formik.values.roomNumber}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.roomNumber && Boolean(formik.errors.roomNumber)}
+                            helperText={formik.touched.roomNumber && formik.errors.roomNumber}
+                        />
+                        <TextField
+                            label="Cost"
+                            fullWidth
+                            margin="normal"
+                            name="cost"
+                            type="number"
+                            value={formik.values.cost}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.cost && Boolean(formik.errors.cost)}
+                            helperText={formik.touched.cost && formik.errors.cost}
+                        />
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                            <Button
+                                onClick={() => setIsDrawerOpen(false)}
+                                sx={{ mr: 1, color: "#174b71" }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit" variant="contained" sx={{ backgroundColor: "#174b71", }}>
+                                Save
+                            </Button>
+                        </Box>
+                    </form>
+                </Box>
+            </Drawer>
         </Paper>
-    );
+    )
 }

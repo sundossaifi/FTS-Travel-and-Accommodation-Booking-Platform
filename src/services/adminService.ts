@@ -206,3 +206,31 @@ export async function addRoomToHotel(hotelId: number, roomData: { roomNumber: st
     }
 }
 
+export async function updateRoom(roomId: number, roomData: { roomNumber: string; cost: number }): Promise<void> {
+    const url = `${BASE_URL}/api/rooms/${roomId}`;
+    const authToken = localStorage.getItem("authToken");
+
+    if (!authToken) {
+        throw new Error("Unauthorized: No authentication token found.");
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify(roomData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update room: ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error("Error updating room:", error);
+        throw error;
+    }
+}
+
