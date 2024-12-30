@@ -24,7 +24,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchHotels, fetchRooms, updateRoom } from "../../../services/adminService";
+import { fetchHotels, fetchRooms, updateRoom, deleteRoom } from "../../../services/adminService"; // Add deleteRoom
 import { Hotel } from "../../../types/admin";
 import { Room } from "../../../types/room";
 import { isTokenExpired } from "../../../utils/authUtils";
@@ -111,6 +111,21 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
 
     function handleMenuClose() {
         setAnchorEl(null);
+    }
+
+    async function handleDeleteRoom() {
+        if (!selectedRoom || !selectedHotel) return;
+
+        try {
+            await deleteRoom(selectedHotel, selectedRoom.roomId); // Call deleteRoom API
+            alert("Room deleted successfully!");
+            setRooms((prevRooms) => prevRooms.filter((room) => room.roomId !== selectedRoom.roomId)); // Update UI
+        } catch (error) {
+            console.error("Failed to delete room:", error);
+            alert("Failed to delete the room. Please try again.");
+        } finally {
+            handleMenuClose(); // Close menu after delete
+        }
     }
 
     const formik = useFormik({
@@ -264,10 +279,7 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
                     Edit
                 </MenuItem>
                 <MenuItem
-                    onClick={() => {
-                        alert("Delete functionality not implemented");
-                        handleMenuClose();
-                    }}
+                    onClick={handleDeleteRoom} 
                 >
                     Delete
                 </MenuItem>

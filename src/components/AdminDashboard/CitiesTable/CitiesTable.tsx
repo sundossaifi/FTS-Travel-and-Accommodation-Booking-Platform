@@ -12,11 +12,18 @@ import {
     Box,
     CircularProgress,
     IconButton,
+    Menu,
+    MenuItem,
+    InputAdornment,
+    Drawer,
+    Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchCitiesList } from "../../../services/adminService";
+import { fetchCitiesList, fetchCityDetails, updateCity, deleteCity } from "../../../services/adminService";
 import { City } from "../../../types/admin";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export default function CitiesTable() {
     const [cities, setCities] = useState<City[]>([]);
@@ -25,6 +32,9 @@ export default function CitiesTable() {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(5);
     const [hasMore, setHasMore] = useState<boolean>(true);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [selectedCity, setSelectedCity] = useState<City | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
 
     useEffect(() => {
         async function loadCities() {
@@ -56,6 +66,69 @@ export default function CitiesTable() {
         setPage(0);
     }
 
+    function handleMenuOpen(event: React.MouseEvent<HTMLElement>, cityId: number) {
+        setAnchorEl(event.currentTarget);
+        const city = cities.find((c) => c.id === cityId);
+        setSelectedCity(city || null);
+    }
+
+    function handleMenuClose() {
+        setAnchorEl(null);
+    }
+
+    async function handleEdit() {
+        if (!selectedCity) return;
+        try {
+            const cityDetails = await fetchCityDetails(selectedCity.id);
+            setSelectedCity(cityDetails);
+            setIsDrawerOpen(true);
+        } catch (error) {
+            alert("Failed to fetch city details.");
+        } finally {
+            handleMenuClose();
+        }
+    }
+
+    async function handleDelete() {
+        if (!selectedCity) return;
+        try {
+            await deleteCity(selectedCity.id);
+            setCities((prev) => prev.filter((city) => city.id !== selectedCity.id));
+            alert("City deleted successfully!");
+        } catch (error) {
+            alert("Failed to delete city. Please try again.");
+        } finally {
+            handleMenuClose();
+        }
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            name: selectedCity?.name || "",
+            description: selectedCity?.description || "",
+        },
+        enableReinitialize: true,
+        validationSchema: Yup.object({
+            name: Yup.string().required("City name is required"),
+            description: Yup.string().required("Description is required"),
+        }),
+        onSubmit: async (values) => {
+            if (!selectedCity) return;
+            try {
+                await updateCity(selectedCity.id, values);
+                setCities((prev) =>
+                    prev.map((city) =>
+                        city.id === selectedCity.id ? { ...city, ...values } : city
+                    )
+                );
+                alert("City updated successfully!");
+                setIsDrawerOpen(false);
+            } catch (error) {
+                alert("Failed to update city. Please try again.");
+            }
+        },
+    });
+
     const filteredCities = cities.filter((city) =>
         city.name.toLowerCase().includes(search.toLowerCase())
     );
@@ -70,10 +143,14 @@ export default function CitiesTable() {
                     onChange={handleSearchChange}
                     fullWidth
                     sx={{ maxWidth: 300 }}
-                    InputProps={{
-                        startAdornment: (
-                            <SearchIcon sx={{ mr: 1, color: "gray" }} />
-                        ),
+                    slotProps={{
+                        input: {
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        },
                     }}
                 />
             </Box>
@@ -104,7 +181,9 @@ export default function CitiesTable() {
                                     <TableCell>{city.name}</TableCell>
                                     <TableCell>{city.description}</TableCell>
                                     <TableCell>
-                                        <IconButton>
+                                        <IconButton
+                                            onClick={(event) => handleMenuOpen(event, city.id)}
+                                        >
                                             <MoreVertIcon />
                                         </IconButton>
                                     </TableCell>
@@ -130,6 +209,57 @@ export default function CitiesTable() {
                     },
                 }}
             />
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+            >
+                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            </Menu>
+            <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+                <Box sx={{ width: 400, padding: 3 }}>
+                    <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                            label="City Name"
+                            fullWidth
+                            margin="normal"
+                            name="name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            margin="normal"
+                            name="description"
+                            value={formik.values.description}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.description && Boolean(formik.errors.description)}
+                            helperText={formik.touched.description && formik.errors.description}
+                        />
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                            <Button
+                                onClick={() => setIsDrawerOpen(false)}
+                                sx={{ mr: 1, color: "#174b71" }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ backgroundColor: "#174b71" }}
+                            >
+                                Save
+                            </Button>
+                        </Box>
+                    </form>
+                </Box>
+            </Drawer>
         </Paper>
     )
 }

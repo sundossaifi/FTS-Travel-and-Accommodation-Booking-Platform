@@ -57,7 +57,7 @@ export default function AddRoomDialog({ open, onClose, hotelId }: AddRoomDialogP
     });
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>Add Room</DialogTitle>
             <DialogContent>
                 <Box
@@ -68,6 +68,7 @@ export default function AddRoomDialog({ open, onClose, hotelId }: AddRoomDialogP
                     <TextField
                         label="Room Number"
                         name="roomNumber"
+                        margin="normal"
                         value={formik.values.roomNumber}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}

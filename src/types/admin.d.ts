@@ -6,7 +6,7 @@ export interface Hotel {
     starRating: number;
     latitude: number;
     longitude: number;
-    cityId?: number; // Added cityId as optional
+    cityId?: number;
 }
 
 export interface City {
