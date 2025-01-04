@@ -1,7 +1,15 @@
 import { Box } from '@mui/material';
 import Sidebar from '../../components/AdminDashboard/Sidebar';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminPage() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate('/admin/manage-hotels');
+    }, [navigate]);
+    
     return (
         <Box sx={{
             display: 'flex',
