@@ -24,7 +24,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { fetchHotels, fetchRooms, updateRoom, deleteRoom } from "../../../services/adminService"; // Add deleteRoom
+import { fetchHotels, fetchRooms, updateRoom, deleteRoom } from "../../../services/adminService"; 
 import { Hotel } from "../../../types/admin";
 import { Room } from "../../../types/room";
 import { isTokenExpired } from "../../../utils/authUtils";
@@ -117,14 +117,14 @@ export default function RoomsTable({ onSelectHotel }: { onSelectHotel: (hotelId:
         if (!selectedRoom || !selectedHotel) return;
 
         try {
-            await deleteRoom(selectedHotel, selectedRoom.roomId); // Call deleteRoom API
+            await deleteRoom(selectedHotel, selectedRoom.roomId); 
             alert("Room deleted successfully!");
-            setRooms((prevRooms) => prevRooms.filter((room) => room.roomId !== selectedRoom.roomId)); // Update UI
+            setRooms((prevRooms) => prevRooms.filter((room) => room.roomId !== selectedRoom.roomId)); 
         } catch (error) {
             console.error("Failed to delete room:", error);
             alert("Failed to delete the room. Please try again.");
         } finally {
-            handleMenuClose(); // Close menu after delete
+            handleMenuClose();
         }
     }
 
