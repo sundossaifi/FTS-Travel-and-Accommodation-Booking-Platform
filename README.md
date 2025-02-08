@@ -21,15 +21,7 @@ In this project, I've used the following libraries:
 - **[`@vis.gl/react-google-maps`](https://visgl.github.io/react-map-gl/)**: React bindings for integrating Google Maps.  
 - **[`jest-preview`](https://www.npmjs.com/package/jest-preview)**: Preview Jest snapshots in a browser.  
 - **[`cra-template-typescript`](https://github.com/facebook/create-react-app/tree/main/packages/cra-template-typescript)**: A TypeScript template for Create React App.  
-- **[`@testing-library/react`](https://testing-library.com/docs/react-testing-library/intro/)**: Simple and complete React DOM testing utilities.  
-- **[`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)**: Custom jest matchers to test the state of the DOM.  
-- **[`@testing-library/user-event`](https://testing-library.com/docs/user-event/intro/)**: Simulates user interactions with the UI.  
-- **[`jest`](https://jestjs.io/)**: JavaScript testing framework with a focus on simplicity.  
-- **[`jest-canvas-mock`](https://github.com/hustcc/jest-canvas-mock)**: Mock implementation of canvas for Jest tests.  
-- **[`jest-environment-jsdom`](https://jestjs.io/docs/configuration#testenvironment-string)**: Test environment that mimics a browser.  
-- **[`msw`](https://mswjs.io/)**: Mock Service Worker for API mocking.  
-- **[`ts-jest`](https://kulshekhar.github.io/ts-jest/)**: A Jest transformer for TypeScript.  
-
+ 
 ## Public Pages
 
 - **Login page**
